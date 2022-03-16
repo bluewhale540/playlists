@@ -51,7 +51,7 @@ CREATE TABLE contains (
     PRIMARY KEY (playlist_id, song_id)
 );
 
-CREATE TABLE inAlbum (
+CREATE TABLE in_album (
     song_id INT NOT NULL PRIMARY KEY,
     album_id INT NOT NULL
 );
