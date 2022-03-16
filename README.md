@@ -7,7 +7,7 @@ CS 4750 playlists project repo
 * language and frameworks TBD
 
 ### Authors
-* [David Dimmett]()
-* [Kayla Lewis]()
-* [Shreya Moharir]()
+* David Dimmett
+* Kayla Lewis
+* Shreya Moharir
 * [Mathew Pham](https://github.com/bluewhale540)
