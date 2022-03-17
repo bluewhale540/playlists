@@ -6,50 +6,50 @@ CREATE TABLE categories (
 );
 
 CREATE TABLE song (
-    song_id int UNIQUE NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    song_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
-    artist VARCHAR(100) NOT NULL
+    artist VARCHAR(100) NOT NULL,
+    FOREIGN KEY (title, artist) REFERENCES categories(title, artist)
 );
 
 CREATE TABLE user (
-    user_id int UNIQUE NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(100) NOT NULL,
-    num_followers int NOT NULL,
+    num_followers INT NOT NULL,
     password VARCHAR(100) NOT NULL
 );
 
 CREATE TABLE playlist (
-    playlist_id int UNIQUE NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    playlist_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(200) NOT NULL,
-    creator int NOT NULL,
-    date_created date NOT NULL,
-    num_likes int NOT NULL,
-    is_public bool NOT NULL
+    date_created DATE NOT NULL,
+    num_likes INT NOT NULL,
+    is_public BOOL NOT NULL
 );
 
 CREATE TABLE album (
-    album_id int UNIQUE NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    album_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(200) NOT NULL,
     artist VARCHAR(100) NOT NULL,
-    date_released date NOT NULL
+    date_released DATE NOT NULL
 );
 
 CREATE TABLE likes (
-    user_id int NOT NULL,
-    playlist_id int NOT NULL,
+    user_id INT NOT NULL,
+    playlist_id INT NOT NULL,
     PRIMARY KEY (user_id, playlist_id),
     FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id)
 );
 
 CREATE TABLE created_by (
-    user_id int NOT NULL,
-    playlist_id int NOT NULL PRIMARY KEY,
+    user_id INT NOT NULL,
+    playlist_id INT NOT NULL PRIMARY KEY,
     FOREIGN KEY (user_id) REFERENCES user(user_id),
     FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id)
 );
 
 CREATE TABLE contains (
-    playlist_id int NOT NULL,
+    playlist_id INT NOT NULL,
     song_id INT NOT NULL,
     PRIMARY KEY (playlist_id, song_id),
     FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id),
