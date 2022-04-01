@@ -1,0 +1,13 @@
+{% extends "playlists/base.html" %} {% block main %}
+
+<div>
+    <ul>
+        {% for playlist in playlists_list %}
+        <li>{{ playlist.name }}</li>
+
+
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock main %}
