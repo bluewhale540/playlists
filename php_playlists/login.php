@@ -63,7 +63,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <body>
     <div class="wrapper">
         <h2>Login</h2>
-        <p>Enter your credentials to login.</p>
+        <p>Enter your credentials to login!</p>
 
         <?php 
         if(!empty($login_error_message)){
