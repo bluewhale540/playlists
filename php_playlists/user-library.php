@@ -22,8 +22,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') //check if post was submitted
         }
         else if($_POST['btnAction'] == "View")
         {
-            header("location: playlist-display.php");
-            $_SESSION["playlist_id"] = $_POST['id'];
+            header("location: playlist_display.php");
+            $_SESSION["playlist_id"] = $_POST['playlist_to_view'];
             
         }
     }
@@ -151,7 +151,7 @@ function deletePlaylist($playlist_id)
                 <input type="submit" value="View" name="btnAction"
                     class="btn btn-info" />
                 <input type="hidden" name="playlist_to_view"
-                    value="<?php echo $playlist['id'] ?>" />
+                    value="<?php echo $playlist['playlist_id'] ?>" />
             </form>
         </td>
         <td> <?php echo $playlist['date_created']; ?> </td>

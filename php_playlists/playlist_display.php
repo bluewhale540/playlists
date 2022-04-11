@@ -11,7 +11,7 @@ $_SESSION["owns_playlist"]= check_owner($_SESSION["playlist_id"]);
 echo "owns playlist";
 echo $_SESSION["owns_playlist"];
 
-$_SESSION["playlist_id"]=101; //for testing purposes this is hardcoded
+//$_SESSION["playlist_id"]=101; //for testing purposes this is hardcoded
 
 $list_of_songs= get_all_songs($_SESSION["playlist_id"]);//get
 
@@ -190,6 +190,7 @@ function get_all_songs($playlist_id)
 <body>
 <div class="container">
   <h1 ><?php echo $playlist_name?></h1>  
+  <p><a href="user-library.php">Go to my playlist library!</a></p>
 
 <hr/>
 <h2 >Playlist Songs</h2>
