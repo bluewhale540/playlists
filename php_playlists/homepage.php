@@ -17,6 +17,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 <body>
     <h1 class="my-5">Hello, <?php echo ($_SESSION["username"]);?></h1>
     <p>
+        <a href="user-library.php" class="btn btn-danger ml-3"> View My Library</a>
         <a href="signout.php" class="btn btn-danger ml-3">Sign Out</a>
     </p>
 </body>
