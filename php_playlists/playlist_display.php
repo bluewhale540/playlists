@@ -7,14 +7,24 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
+$_SESSION["is_public"]=0;
 $_SESSION["owns_playlist"]= check_owner($_SESSION["playlist_id"]);
+
+$playlist_name= get_playlist_info($_SESSION["playlist_id"]);
+
+if($_SESSION["is_public"]==0 && $_SESSION["owns_playlist"]==0){
+    header("location: user-library.php");
+    exit;
+}
+
 //  echo "owns playlist";
 //  echo $_SESSION["owns_playlist"];
 
 $likes_playlist= check_if_likes();
 $list_of_songs= get_all_songs($_SESSION["playlist_id"]);//get
 
-$playlist_name= get_playlist_name($_SESSION["playlist_id"]);
+
+
 
 function check_if_likes(){
     global $db;
@@ -131,9 +141,9 @@ function check_owner($playlist_id){
     
 }
 
-function get_playlist_name($playlist_id){
+function get_playlist_info($playlist_id){
     global $db;
-	$query = "select name from playlist where playlist_id = :playlist_id";
+	$query = "select * from playlist where playlist_id = :playlist_id";
 	
 	$statement= $db->prepare($query);
     $statement->bindValue(':playlist_id', $playlist_id);
@@ -143,6 +153,7 @@ function get_playlist_name($playlist_id){
 
 	$statement->closeCursor();
 
+    $_SESSION["is_public"]= $results['is_public'];
     return $results['name'];
     
 }
