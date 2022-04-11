@@ -63,6 +63,8 @@ function addSong($title, $artist, $album_name, $date_released){
     $statement-> execute();
 	$statement->closeCursor();
 
+    //TODO Genre
+
     //add song to playlist
 
     $query = "insert into contains (playlist_id,song_id) values(:playlist_id, (select song_id from song where title= :title and artist= :artist) )";

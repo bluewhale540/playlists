@@ -8,15 +8,63 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 $_SESSION["owns_playlist"]= check_owner($_SESSION["playlist_id"]);
-echo "owns playlist";
-echo $_SESSION["owns_playlist"];
+// echo "owns playlist";
+// echo $_SESSION["owns_playlist"];
 
-$_SESSION["playlist_id"]=101; //for testing purposes this is hardcoded
+ //for testing purposes this is hardcoded
 
 $list_of_songs= get_all_songs($_SESSION["playlist_id"]);//get
 
 $playlist_name= get_playlist_name($_SESSION["playlist_id"]);
+$likes_playlist= check_if_likes();
+function check_if_likes(){
+    global $db;
+    $query = "select * from likes where playlist_id = :playlist_id and user_id= :user_id";
+	
+	$statement= $db->prepare($query);
+    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
+    $statement->bindValue(':user_id', $_SESSION["id"]);
+    $statement-> execute();
 
+	$results = $statement->fetch();   
+
+	$statement->closeCursor();
+
+    if(empty($results)){
+        return 0;
+    }
+    else {
+        return 1;
+    }
+}
+if ($_SERVER['REQUEST_METHOD'] == 'POST')
+{
+    if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Like")
+    {
+        like_playlist();
+    }
+
+    else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Unlike")
+    {
+        unlike_playlist();
+    }
+   
+    else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Delete")
+    {
+        delete_song($_POST['song_to_delete']);
+        $list_of_songs = get_all_songs();
+    }
+
+}
+function like_playlist(){
+
+}
+function unlike_playlist(){
+    
+}
+function delete_song($song_id){
+    
+}
 function check_owner($playlist_id){
     global $db;
 	$query = "select name from created_by where playlist_id = :playlist_id and user_id= :user_id";
@@ -194,8 +242,17 @@ function get_all_songs($playlist_id)
 <hr/>
 <h2 >Playlist Songs</h2>
 <?php if($_SESSION["owns_playlist"]==0){
-    echo "put follow button here";
+    if($likes_playlist){
+        echo "< method='post'> <input type='submit' value='Unlike' name='btnAction' class='btn btn-secondary' title='unlike the playlist' /></form>";
+    }
+    else{
+        echo "<method='post'>
+        <input type='submit' value='Like' name='btnAction' class='btn btn-success' title='like the playlist' />
+        </form>";
+    }
+    
 }?>
+
 
 
 
@@ -221,7 +278,7 @@ function get_all_songs($playlist_id)
     <td>
       <form action="" method="post">
         <input type="submit" value="Delete" name="btnAction" class="btn btn-danger" title="Permanently delete the record" />      
-        <input type="hidden" name="friend_to_delete" value="<?php echo $song['song_id']?>" />
+        <input type="hidden" name="song_to_delete" value="<?php echo $song['song_id']?>" />
       </form>
     </td>
   </tr>
