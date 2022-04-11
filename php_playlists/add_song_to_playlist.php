@@ -7,8 +7,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login.php");
     exit;
 }
-echo $_SESSION["playlist_id"];
-
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
@@ -89,18 +87,8 @@ function addSong($title, $artist, $album_name, $date_released){
   
   <!-- 2. include meta tag to ensure proper rendering and touch zooming -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- 
-  Bootstrap is designed to be responsive to mobile.
-  Mobile-first styles are part of the core framework.
-   
-  width=device-width sets the width of the page to follow the screen-width
-  initial-scale=1 sets the initial zoom level when the page is first loaded   
-  -->
-  
-  <meta name="author" content="Kayla Lewis">
-  <meta name="description" content="This is a friendbook - not to be confused with Facebook ">  
     
-  <title>DB interfacing example</title>
+  <title>Add song to playlist</title>
   
   <!-- 3. link bootstrap -->
   <!-- if you choose to use CDN for CSS bootstrap -->  

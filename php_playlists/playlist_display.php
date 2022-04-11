@@ -8,14 +8,14 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 $_SESSION["owns_playlist"]= check_owner($_SESSION["playlist_id"]);
-// echo "owns playlist";
-// echo $_SESSION["owns_playlist"];
+//  echo "owns playlist";
+//  echo $_SESSION["owns_playlist"];
 
-
+$likes_playlist= check_if_likes();
 $list_of_songs= get_all_songs($_SESSION["playlist_id"]);//get
 
 $playlist_name= get_playlist_name($_SESSION["playlist_id"]);
-$likes_playlist= check_if_likes();
+
 function check_if_likes(){
     global $db;
     $query = "select * from likes where playlist_id = :playlist_id and user_id= :user_id";
@@ -56,17 +56,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 
 }
 function like_playlist(){
+    global $db;
+    $query = "insert into likes values(:user_id,:playlist_id) ";
+    $statement= $db->prepare($query);
+    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
+    $statement->bindValue(':user_id', $_SESSION["id"]);
+    $statement-> execute();
+	$statement->closeCursor();
 
+    $query = "update playlist set num_likes = num_likes+1 where playlist_id= :playlist_id ";
+    $statement= $db->prepare($query);
+    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
+    $statement-> execute();
+	$statement->closeCursor();
+    
+    header("location: playlist_display.php");
 }
 function unlike_playlist(){
+    global $db;
+    $query = "delete from likes where playlist_id = :playlist_id and user_id= :user_id";
+    $statement= $db->prepare($query);
+    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
+    $statement->bindValue(':user_id', $_SESSION["id"]);
+    $statement-> execute();
+	$statement->closeCursor();
+
+    $query = "update playlist set num_likes = num_likes-1 where playlist_id= :playlist_id ";
+    $statement= $db->prepare($query);
+    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
+    $statement-> execute();
+	$statement->closeCursor();
     
+    header("location: playlist_display.php");
 }
 function delete_song($song_id){
     
 }
 function check_owner($playlist_id){
     global $db;
-	$query = "select name from created_by where playlist_id = :playlist_id and user_id= :user_id";
+	$query = "select * from created_by where playlist_id = :playlist_id and user_id= :user_id";
 	
 	$statement= $db->prepare($query);
     $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
@@ -113,7 +141,6 @@ function get_all_songs($playlist_id)
 	$results = $statement->fetchAll();   
 
 	$statement->closeCursor();
-    
     $song_list=[];
 
     foreach ($results as $song_id) {
@@ -198,17 +225,6 @@ function get_all_songs($playlist_id)
   
   <!-- 2. include meta tag to ensure proper rendering and touch zooming -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- 
-  Bootstrap is designed to be responsive to mobile.
-  Mobile-first styles are part of the core framework.
-   
-  width=device-width sets the width of the page to follow the screen-width
-  initial-scale=1 sets the initial zoom level when the page is first loaded   
-  -->
-  
-  <meta name="author" content="Kayla Lewis">
-  <meta name="description" content="This is a friendbook - not to be confused with Facebook ">  
-    
   <title>Playlist Display</title>
   
   <!-- 3. link bootstrap -->
@@ -218,19 +234,9 @@ function get_all_songs($playlist_id)
   <!-- you may also use W3's formats -->
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   
-  <!-- 
-  Use a link tag to link an external resource.
-  A rel (relationship) specifies relationship between the current document and the linked resource. 
-  -->
-  
-  <!-- If you choose to use a favicon, specify the destination of the resource in href -->
+
   <link rel="icon" type="image/png" href="http://www.cs.virginia.edu/~up3f/cs4750/images/db-icon.png" />
   
-  <!-- if you choose to download bootstrap and host it locally -->
-  <!-- <link rel="stylesheet" href="path-to-your-file/bootstrap.min.css" /> --> 
-  
-  <!-- include your CSS -->
-  <!-- <link rel="stylesheet" href="custom.css" />  -->
        
 </head>
 
@@ -238,21 +244,21 @@ function get_all_songs($playlist_id)
 <div class="container">
   <h1 ><?php echo $playlist_name?></h1>  
   <p><a href="user-library.php">Go to my playlist library!</a></p>
+  <p><a href="add_song_to_playlist.php">Add song to playlist!</a></p>
 
 <hr/>
 <h2 >Playlist Songs</h2>
-<?php if($_SESSION["owns_playlist"]==0){
+<?php if($_SESSION["owns_playlist"]==0|| 1){ //GET RID OF the '|| 1' TO ALLOW ANYONE INCLUDING OWNER TO LIKE PLAYLIST
     if($likes_playlist){
-        echo "< method='post'> <input type='submit' value='Unlike' name='btnAction' class='btn btn-secondary' title='unlike the playlist' /></form>";
+        echo "<form method='post' action='playlist_display.php'> <input type='submit' value='Unlike' name='btnAction' class='btn btn-secondary' title='unlike the playlist' /></form>";
     }
     else{
-        echo "<method='post'>
+        echo "<form method='post' action='playlist_display.php'>
         <input type='submit' value='Like' name='btnAction' class='btn btn-success' title='like the playlist' />
         </form>";
     }
     
 }?>
-
 
 
 
