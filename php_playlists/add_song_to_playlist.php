@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Add")
     {
         addSong($_POST['title'], $_POST['artist'], $_POST['album_name'],$_POST['date_released']);
-       
+        header("location: playlist_display.php");
     }
 }
 function addSong($title, $artist, $album_name, $date_released){

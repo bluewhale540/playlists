@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
     else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Delete")
     {
         delete_song($_POST['song_to_delete']);
-        $list_of_songs = get_all_songs();
+        $list_of_songs = get_all_songs($_SESSION["playlist_id"]);
     }
 
 }
@@ -90,7 +90,24 @@ function unlike_playlist(){
     header("location: playlist_display.php");
 }
 function delete_song($song_id){
-    
+    global $db;
+    $query = "delete from in_album where song_id = :song_id";
+    $statement= $db->prepare($query);
+    $statement->bindValue(':song_id', $song_id);
+    $statement-> execute();
+	$statement->closeCursor();
+
+    $query = "delete from contains where song_id = :song_id";
+    $statement= $db->prepare($query);
+    $statement->bindValue(':song_id', $song_id);
+    $statement-> execute();
+	$statement->closeCursor();
+
+    $query = "delete from song where song_id = :song_id";
+    $statement= $db->prepare($query);
+    $statement->bindValue(':song_id', $song_id);
+    $statement-> execute();
+	$statement->closeCursor();
 }
 function check_owner($playlist_id){
     global $db;
