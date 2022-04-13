@@ -10,24 +10,21 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 
 $playlist_to_add = null;
 
-if($_SERVER['REQUEST_METHOD'] == 'POST') //check if post was submitted
-{ 
-    if(!empty($_POST['btnAction']))
-    {
-        if($_POST['btnAction'] == "Create")
-        {
-            if($_POST['make_public'] == "No"){
-                addPlaylist($_POST['name'], $_POST['date_created'], 0);
-            }
-            else if($_POST['make_public'] == "Yes"){
-                addPlaylist($_POST['name'], $_POST['date_created'], 1);
-            }
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if($_POST['btnAction'] == "Create") {
+        $timezone = date_default_timezone_set('America/New_York');
+        $date = date('Y-m-d H:i:s');
+
+        if($_POST['public_radio'] == "public"){
+            addPlaylist($_POST['name'], $date, 1);
+        }
+        else {
+            addPlaylist($_POST['name'], $date, 0);
         }
     }
 }
 
-function addPlaylist($name, $date_created, $is_public)
-{
+function addPlaylist($name, $date_created, $is_public) {
     global $db;
     
     $query1 = "insert into playlist (name, date_created, num_likes, is_public)
@@ -93,43 +90,33 @@ function addPlaylist($name, $date_created, $is_public)
 </nav>
 
 <div class="container mt-3">
-
     <h1>Create Playlist</h1>
-  
-    <form name="mainForm" action="add-playlist.php" method="post">    
-        <div class="row mb-3 mx-3">
+    <form name="mainForm" action="add-playlist.php" method="post">
+        <div class="form-group row mb-3 mx-3">
             Playlist Name:
             <input type="text" class="form-control" name="name" required
-                value="<?php if ($playlist_to_add!=null) echo $playlist_to_add['name'] ?>"
-            />        
-        </div> 
-        <div class="row mb-3 mx-3">
-            Today's Date (YYYY-MM-DD):
-            <input type="text" class="form-control" name="date_created" required
-                value="<?php if ($playlist_to_add!=null) echo $playlist_to_add['date_created'] ?>"
-            />          
+                    value="<?php if ($playlist_to_add!=null) echo $playlist_to_add['name'] ?>"
+            >
         </div>
-        <div class="row mb-3 mx-3">
-            Make Public? (Yes/No)
-            <input type="text" class="form-control" name="make_public" required
-                value="<?php if ($playlist_to_add!=null) echo $playlist_to_add['make_public'] ?>"
-            />          
-        </div>
+        <fieldset class="form-group mb-3 mx-3">
+            <legend>Make Public?</legend>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="public_radio" id="public" value="public" checked="">
+                    Yes - other users will be able to see and like my playlist
+                </label>
+            </div>
+            <div class="form-check">
+                <label class="form-check-label">
+                    <input type="radio" class="form-check-input" name="public_radio" id="private" value="private">
+                    No - only I will be able to see this playlist
+                </label>
+            </div>
+        </fieldset>
         <input type="submit" value="Create" name="btnAction" class="btn btn-primary"/>
-    </form> 
+    </form>
     <br>
     <p><a href="user-library.php">Go to your playlist library!</a></p>
-
 </div>
-
-  <!-- CDN for JS bootstrap -->
-  <!-- you may also use JS bootstrap to make the page dynamic -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
-  
-  <!-- for local -->
-  <!-- <script src="your-js-file.js"></script> -->  
-
-  
-</div>    
 </body>
 </html>
