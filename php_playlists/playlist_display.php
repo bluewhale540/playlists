@@ -3,16 +3,17 @@ require('connect-db.php');
 session_start();
 
 //check session
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
 }
+
 $_SESSION["is_public"]=0;
 $_SESSION["owns_playlist"]= check_owner($_SESSION["playlist_id"]);
 
 $playlist_name= get_playlist_info($_SESSION["playlist_id"]);
 
-if($_SESSION["is_public"]==0 && $_SESSION["owns_playlist"]==0){
+if($_SESSION["is_public"]==0 && $_SESSION["owns_playlist"]==0) {
     header("location: user-library.php");
     exit;
 }
@@ -22,9 +23,6 @@ if($_SESSION["is_public"]==0 && $_SESSION["owns_playlist"]==0){
 
 $likes_playlist= check_if_likes();
 $list_of_songs= get_all_songs($_SESSION["playlist_id"]);//get
-
-
-
 
 function check_if_likes(){
     global $db;
@@ -39,33 +37,28 @@ function check_if_likes(){
 
 	$statement->closeCursor();
 
-    if(empty($results)){
+    if(empty($results)) {
         return 0;
     }
     else {
         return 1;
     }
 }
-if ($_SERVER['REQUEST_METHOD'] == 'POST')
-{
-    if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Like")
-    {
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Like") {
         like_playlist();
     }
-
-    else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Unlike")
-    {
+    else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Unlike") {
         unlike_playlist();
     }
-   
-    else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Delete")
-    {
+    else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Delete") {
         delete_song($_POST['song_to_delete']);
         $list_of_songs = get_all_songs($_SESSION["playlist_id"]);
     }
-
 }
-function like_playlist(){
+
+function like_playlist() {
     global $db;
     $query = "insert into likes values(:user_id,:playlist_id) ";
     $statement= $db->prepare($query);
@@ -82,7 +75,8 @@ function like_playlist(){
     
     header("location: playlist_display.php");
 }
-function unlike_playlist(){
+
+function unlike_playlist() {
     global $db;
     $query = "delete from likes where playlist_id = :playlist_id and user_id= :user_id";
     $statement= $db->prepare($query);
@@ -99,7 +93,8 @@ function unlike_playlist(){
     
     header("location: playlist_display.php");
 }
-function delete_song($song_id){
+
+function delete_song($song_id) {
     global $db;
     $query = "delete from in_album where song_id = :song_id";
     $statement= $db->prepare($query);
@@ -119,7 +114,8 @@ function delete_song($song_id){
     $statement-> execute();
 	$statement->closeCursor();
 }
-function check_owner($playlist_id){
+
+function check_owner($playlist_id) {
     global $db;
 	$query = "select * from created_by where playlist_id = :playlist_id and user_id= :user_id";
 	
@@ -138,10 +134,9 @@ function check_owner($playlist_id){
     else {
         return 1;
     }
-    
 }
 
-function get_playlist_info($playlist_id){
+function get_playlist_info($playlist_id) {
     global $db;
 	$query = "select * from playlist where playlist_id = :playlist_id";
 	
@@ -157,8 +152,8 @@ function get_playlist_info($playlist_id){
     return $results['name'];
     
 }
-function get_all_songs($playlist_id)
-{
+
+function get_all_songs($playlist_id) {
 	global $db;
 	$query = "select * from contains where playlist_id = :playlist_id";
 	
@@ -222,29 +217,21 @@ function get_all_songs($playlist_id)
         $song['album'] = $songinfo['title'];
         $song['year'] = $albuminfo['date_released'];
        
-        
-
-  
         if (!empty($genreinfo)){
         $song['genre'] = $genreinfo['genre'];
         }
     
-    else{
+    else {
         $song['genre']= "N/A";
     }
-
         array_push($song_list, $song);
 
       }
-
 	return $song_list;
-
 }
 
 
 ?>
-
-
 
 <!DOCTYPE html>
 <html>
@@ -308,9 +295,9 @@ function get_all_songs($playlist_id)
 
 
 <!-- <div class="row justify-content-center">   -->
-<table class="table table-hover" style="width:90%">
+<table class="table table-hover">
   <thead>
-  <tr style="background-color:#B0B0B0">
+  <tr>
     <th width="25%">Name</th>        
     <th width="25%">Artist</th>        
     <th width="20%">Album</th> 
@@ -339,20 +326,7 @@ function get_all_songs($playlist_id)
   </table>
 
   <?php 
-  
     echo "comment section here! ";
-
   ?>
-<!-- </div>   -->
-
-
-  <!-- CDN for JS bootstrap -->
-  <!-- you may also use JS bootstrap to make the page dynamic -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
-  
-  <!-- for local -->
-  <!-- <script src="your-js-file.js"></script> -->  
-  
-</div>    
 </body>
 </html>

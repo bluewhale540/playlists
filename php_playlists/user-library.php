@@ -3,7 +3,7 @@ require('connect-db.php');
 
 session_start();
 //check session
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
 }
@@ -11,8 +11,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 $list_of_playlists = getAllPlaylists();
 $playlist_to_delete = null;
 
-if($_SERVER['REQUEST_METHOD'] == 'POST') //check if post was submitted
-{ 
+if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST['btnAction']))
     {
         if($_POST['btnAction'] == "Delete")
@@ -29,8 +28,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') //check if post was submitted
     }
 }
 
-function getAllPlaylists()
-{
+function getAllPlaylists() {
     global $db;
     $query = "select * from playlist natural join created_by where user_id=:id";
     $statement = $db->prepare($query);
@@ -42,8 +40,7 @@ function getAllPlaylists()
     return $results;
 }
 
-function deletePlaylist($playlist_id)
-{
+function deletePlaylist($playlist_id) {
     global $db;
 
     $query1 = "delete from created_by where playlist_id=:playlist_id";
@@ -127,9 +124,9 @@ function deletePlaylist($playlist_id)
 
 <hr/>
 
-<table class="table table-hover" style="width:90%">
+<table class="table table-hover">
     <thead>
-    <tr style="background-color:#B0B0B0">
+    <tr>
         <th width="18%">Playlist Name</th>
         <th width="5%"></th>
         <th width="8%">Date Created</th>
@@ -140,7 +137,8 @@ function deletePlaylist($playlist_id)
     </thead>
     <?php foreach ($list_of_playlists as $playlist): ?>
     <tr>
-        <td> <?php echo $playlist['name']; ?> </td>
+        <td> <?php echo $playlist['name']; ?>
+        </td>
         <td>
             <form action="user-library.php" method="post">
                 <input type="submit" value="View" name="btnAction"
@@ -176,15 +174,5 @@ function deletePlaylist($playlist_id)
 
 </table>
 </div>
-
-  <!-- CDN for JS bootstrap -->
-  <!-- you may also use JS bootstrap to make the page dynamic -->
-  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
-  
-  <!-- for local -->
-  <!-- <script src="your-js-file.js"></script> -->  
-
-  
-</div>    
 </body>
 </html>
