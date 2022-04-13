@@ -11,13 +11,23 @@
 
 // to get instance connection name, go to GCP SQL overview page
 ////////////////////////////////////////////
+$is_dev = getenv('DEV');
+if (!$is_dev) {
+   /** S22, PHP (on local XAMPP or CS server) connect to MySQL instance (GCP) **/
+   $username = 'root';                      // or your username
+   $password = 'cs4750';        // or your password
+   $host = 'cs4750-playlists:us-east4:playlists-db';       // projectID = cs4750, SQL instance ID = db-demo
+   $dbname = 'project';                   // database name = guestbook
+   $dsn = "mysql:host=34.150.221.90;dbname=$dbname";       // connect PHP (XAMPP) to DB (GCP)
+} else {
 
-/** S22, PHP (on local XAMPP or CS server) connect to MySQL instance (GCP) **/
-$username = 'root';                      // or your username
-$password = 'cs4750';        // or your password
-$host = 'cs4750-playlists:us-east4:playlists-db';       // projectID = cs4750, SQL instance ID = db-demo
-$dbname = 'project';                   // database name = guestbook
-$dsn = "mysql:host=34.150.221.90;dbname=$dbname";       // connect PHP (XAMPP) to DB (GCP)
+   $username = 'user';
+   $password = 'password';
+   $host = 'localhost:3306';
+   $dbname = 'project';
+   $dsn = "mysql:host=$host;dbname=$dbname";
+}
+
 
 // to get public IP addres of the SQL instance, go to GCP SQL overview page
 
@@ -36,7 +46,7 @@ $dsn = "mysql:host=34.150.221.90;dbname=$dbname";       // connect PHP (XAMPP) t
 // $dsn = "mysql:host=$host;dbname=$dbname";  
 ////////////////////////////////////////////
 
- 
+
 /** S22, PHP (on GCP, local XAMPP, or CS server) connect to MySQL (on CS server) **/
 // $username = 'ksl3fs'; 
 // $password = 'testing898';
@@ -60,24 +70,19 @@ $dsn = "mysql:host=34.150.221.90;dbname=$dbname";       // connect PHP (XAMPP) t
 
 
 /** connect to the database **/
-try 
-{
+try {
    $db = new PDO($dsn, $username, $password);
-   
+
    // dispaly a message to let us know that we are connected to the database 
-    //echo "<p>You are connected to the database --- dsn=$dsn, user=$username, pwd=$password </p>";
-}
-catch (PDOException $e)     // handle a PDO exception (errors thrown by the PDO library)
+   //echo "<p>You are connected to the database --- dsn=$dsn, user=$username, pwd=$password </p>";
+} catch (PDOException $e)     // handle a PDO exception (errors thrown by the PDO library)
 {
    // Call a method from any object, use the object's name followed by -> and then method's name
    // All exception objects provide a getMessage() method that returns the error message 
-   $error_message = $e->getMessage();        
+   $error_message = $e->getMessage();
    echo "<p>An error occurred while connecting to the database: $error_message </p>";
-}
-catch (Exception $e)       // handle any type of exception
+} catch (Exception $e)       // handle any type of exception
 {
    $error_message = $e->getMessage();
    echo "<p>Error message: $error_message </p>";
 }
-
-?>
