@@ -1,5 +1,6 @@
 <?php
 require('connect-db.php');
+require('userlibs/playlist_fxs.php');
 
 session_start();
 //check session
@@ -14,64 +15,15 @@ $playlist_to_delete = null;
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST['btnAction']))
     {
-        if($_POST['btnAction'] == "Delete")
-        {
+        if($_POST['btnAction'] == "Delete") {
             deletePlaylist($_POST['playlist_to_delete']);
             $list_of_playlists = getAllPlaylists();
         }
-        else if($_POST['btnAction'] == "View")
-        {
+        else if($_POST['btnAction'] == "View") {
             header("location: playlist_display.php");
             $_SESSION["playlist_id"] = $_POST['playlist_to_view'];
-            
         }
     }
-}
-
-function getAllPlaylists() {
-    global $db;
-    $query = "select * from playlist natural join created_by where user_id=:id";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':id', $_SESSION["id"]);
-    $statement->execute();
-
-    $results = $statement->fetchAll();
-    $statement->closeCursor();
-    return $results;
-}
-
-function deletePlaylist($playlist_id) {
-    global $db;
-
-    $query1 = "delete from created_by where playlist_id=:playlist_id";
-    $query2 = "delete from contains where playlist_id=:playlist_id";
-    $query3 = "delete from comment where playlist_id=:playlist_id";
-    $query4 = "delete from likes where playlist_id=:playlist_id";
-    $query5 = "delete from playlist created_by where playlist_id=:playlist_id";
-
-    $statement1 = $db->prepare($query1);
-    $statement2 = $db->prepare($query2);
-    $statement3 = $db->prepare($query3);
-    $statement4 = $db->prepare($query4);
-    $statement5 = $db->prepare($query5);
-
-    $statement1->bindValue(':playlist_id', $playlist_id);
-    $statement2->bindValue(':playlist_id', $playlist_id);
-    $statement3->bindValue(':playlist_id', $playlist_id);
-    $statement4->bindValue(':playlist_id', $playlist_id);
-    $statement5->bindValue(':playlist_id', $playlist_id);
-
-    $statement1->execute();
-    $statement2->execute();
-    $statement3->execute();
-    $statement4->execute();
-    $statement5->execute();
-
-    $statement1->closeCursor();
-    $statement2->closeCursor();
-    $statement3->closeCursor();
-    $statement4->closeCursor();
-    $statement5->closeCursor();
 }
 
 ?>
@@ -111,7 +63,7 @@ function deletePlaylist($playlist_id) {
                     <a class="nav-link" href="search.php">Search</a>
                 </li>
             </ul>
-
+            <a class="btn btn-info mx-1" href="profile.php">My Profile</a>
             <a class="btn btn-primary" href="signout.php">Logout</a>
         </div>
     </div>
@@ -171,7 +123,6 @@ function deletePlaylist($playlist_id) {
         </td>
     </tr>
     <?php endforeach; ?>
-
 </table>
 </div>
 </body>

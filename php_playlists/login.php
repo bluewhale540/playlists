@@ -14,20 +14,14 @@ $login_error_message = "";
  
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
- 
-
     if(empty($username_err) && empty($password_err)){
         $query = "select user_id, password from user where email = :email";
         $statement= $db->prepare($query);
         $statement->bindValue(':email', trim($_POST["email"]));
         $statement-> execute();
         $results = $statement->fetch();
-            
-
-                if(!empty($results)){                    
-                    
+                if(!empty($results)){
                         if(password_verify(trim($_POST["password"]), $results['password'])){
-
                             session_start();
 
                             $_SESSION["loggedin"] = true;
@@ -35,11 +29,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             $_SESSION["username"] = trim($_POST["email"]);                            
                             
                             header("location: homepage.php");
-                        } else{
-                            
+                        } else {
                             $login_error_message = "Incorrect email/password";
                         }
-                } else{
+                }
+                else {
                     $login_error_message = "Incorrect email/password";
                 }
             } 

@@ -83,7 +83,7 @@ function addPlaylist($name, $date_created, $is_public) {
                     <a class="nav-link" href="search.php">Search</a>
                 </li>
             </ul>
-
+            <a class="btn btn-info mx-1" href="profile.php">My Profile</a>
             <a class="btn btn-primary" href="signout.php">Logout</a>
         </div>
     </div>

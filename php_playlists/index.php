@@ -6,52 +6,44 @@ $login_error_message = "";
 
 global $db;
 
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-  
-
-    if(empty(trim($_POST["email"]))){
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+    if (empty(trim($_POST["email"]))) {
         $login_error_message = "This field cannot be blank";
-    }
-   else{
-    global $db;
-    $query = "select user_id from user where email = :email";
-            $statement= $db->prepare($query);
-            $statement->bindValue(':email', trim($_POST["email"]));
-            $statement-> execute();
-            $results = $statement->fetchAll();
-          
-            
-           if (count($results)==0) { 
-            $email = trim($_POST["email"]);
-           }
-           else{
-            $login_error_message= "email already exists";
-            echo "<p>That email already exist </p>";
+    } else {
+        global $db;
+        $query = "select user_id from user where email = :email";
+        $statement = $db->prepare($query);
+        $statement->bindValue(':email', trim($_POST["email"]));
+        $statement->execute();
+        $results = $statement->fetchAll();
 
-           }
-           $statement->closeCursor();
-           
+        if (count($results) == 0) {
+            $email = trim($_POST["email"]);
+        } else {
+            $login_error_message = "email already exists";
+            echo "<p>That email already exist </p>";
+        }
+        $statement->closeCursor();
     }
-    
-//TODO validate password lengh etc.
-    if(empty($login_error_message)){
-        
-      $query = "insert into user (email, num_followers, password) values(:email, :num_followers, :password)";
+
+    //TODO validate password lengh etc.
+    if(empty($login_error_message)) {
+        $query = "insert into user (email, num_followers, password) values(:email, :num_followers, :password)";
         $statement= $db->prepare($query);
         $statement->bindValue(':email', $email);
         $statement->bindValue(':num_followers', 0);
         $statement->bindValue(':password', password_hash(trim($_POST["password"]), PASSWORD_DEFAULT));
         
-        if($statement-> execute()==true){
-          header("location: login.php");
-        }else{
-          echo "ERROR";
+        if($statement-> execute()==true) {
+            header("location: login.php");
+        }
+        else {
+            echo "ERROR";
         }
         $statement->closeCursor();
-       
     }
-    
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -78,7 +70,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
                 <span class="invalid-feedback"><?php echo $password_err; ?></span>
             </div>
-           
             <div class="form-group mb-1">
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-secondary ml-2" value="Reset">
