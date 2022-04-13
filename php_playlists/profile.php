@@ -1,27 +1,32 @@
 <?php
 require('connect-db.php');
+require('userlibs/user_fxs.php');
 require('userlibs/follower_fxs.php');
 require('userlibs/playlist_fxs.php');
 
 session_start();
 //check session
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
 }
 
+$displayName = '';
 $list_of_playlists = [];
 $playlist_to_delete = null;
 
 $followers = [];
 $following = [];
 
-if (isset($_GET['user'])) {
+if (isset($_GET['user']) and ($_GET['user'] != $_SESSION['id'])) {
+    $uName = getUser($_GET['user'])['email'];
+    $displayName = "{$uName}'s";
     $list_of_playlists = getPopular($_GET['user']);
     $followers = getFollowers($_GET['user']);
     $following = getFollowing($_GET['user']);
 }
 else {
+    $displayName = 'My';
     $list_of_playlists = getPopular($_SESSION['id']);
     $followers = getFollowers($_SESSION['id']);
     $following = getFollowing($_SESSION['id']);
@@ -54,7 +59,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-    <title>Homepage</title>
+    <title><?php echo $displayName; ?> Profile</title>
+    <link rel="icon" type="image/x-icon" href="style/spot.jpg">
 </head>
 
 <body> <!--everything displayed on screen-->
@@ -62,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!--Navbar-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="homepage.php">Title</a>
+        <a href="#" class="img-fluid" style="margin-right: 8px"><img src="style/spot.jpg"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -86,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </nav>
 
 <div class="container mt-3">
-    <h1>My Profile</h1>
+    <h1><?php echo $displayName; ?> Profile</h1>
 
     <h2>Most Popular Playlists</h2>
     <table class="table table-hover">

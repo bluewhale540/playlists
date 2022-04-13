@@ -1,15 +1,9 @@
 <?php
-session_start();
- 
-//check session
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-    header("location: login.php");
-    exit;
-}
+
 ?>
- 
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="style/bootstrap.min.css">
@@ -17,10 +11,10 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-    <title>Homepage</title>
-    <link rel="icon" type="image/x-icon" href="style/spot.jpg">
+    <title>Search</title>
 </head>
-<body>
+
+<body> <!--everything displayed on screen-->
 
 <!--Navbar-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -48,11 +42,6 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     </div>
 </nav>
 
-<div class="container mt-3 mb-4">
-    <h1 class="my-5">Hello, <?php echo ($_SESSION["username"]);?></h1>
-    <p>
-        <a href="user-library.php" class="btn btn-danger ml-3"> View My Library</a>
-    </p>
+<div class="container mt-3">
+    <h1>Search</h1>
 </div>
-</body>
-</html>

@@ -55,6 +55,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     <title>Homepage</title>
+    <link rel="icon" type="image/x-icon" href="style/spot.jpg">
 </head>
 <body>
     <div class="container w-25 mt-5">

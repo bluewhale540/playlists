@@ -250,7 +250,7 @@ function get_all_songs($playlist_id) {
 <!--Navbar-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="homepage.php">Title</a>
+        <a href="#" class="img-fluid" style="margin-right: 8px"><img src="style/spot.jpg"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
