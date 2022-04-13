@@ -53,34 +53,33 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     
 }
 ?>
-<! --- Place holder signup copied from from https://www.tutorialrepublic.com/php-tutorial/php-mysql-login-system.php ---> 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body{ font: 14px sans-serif; }
-        .wrapper{ width: 360px; padding: 20px; }
-    </style>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="style/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    <title>Homepage</title>
 </head>
 <body>
-    <div class="wrapper">
+    <div class="container w-25 mt-5">
         <h2>Sign Up</h2>
         <form action="index.php" method="post">
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label>Email</label>
                 <input type="text" name="email" class="form-control <?php echo (!empty($login_error_message)) ? 'is-invalid' : ''; ?>" value="<?php echo $email; ?>">
                 <span class="invalid-feedback"><?php echo $login_error_message; ?></span>
             </div>    
-            <div class="form-group">
+            <div class="form-group mb-2">
                 <label>Password</label>
                 <input type="password" name="password" class="form-control" value="<?php echo $password; ?>">
                 <span class="invalid-feedback"><?php echo $password_err; ?></span>
             </div>
            
-            <div class="form-group">
+            <div class="form-group mb-1">
                 <input type="submit" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-secondary ml-2" value="Reset">
             </div>
