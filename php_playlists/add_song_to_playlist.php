@@ -12,11 +12,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST')
 {
     if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Add")
     {
-        addSong($_POST['title'], $_POST['artist'], $_POST['album_name'],$_POST['date_released']);
+        addSong($_POST['title'], $_POST['artist'], $_POST['album_name'],$_POST['date_released'], $_POST['genre']);
         header("location: playlist_display.php");
     }
 }
-function addSong($title, $artist, $album_name, $date_released){
+function addSong($title, $artist, $album_name, $date_released, $genre){
     global $db;
     //add song to database
 
@@ -43,7 +43,7 @@ function addSong($title, $artist, $album_name, $date_released){
     $query = "insert into album (title,artist, date_released) values(:title, :artist, :date_released)";
     $statement= $db->prepare($query);
 
-    $statement->bindValue(':title',$title);
+    $statement->bindValue(':title',$album_name);
     $statement->bindValue(':artist',$artist);
     $statement->bindValue(':date_released',$date_released);
     $statement-> execute();
@@ -61,7 +61,16 @@ function addSong($title, $artist, $album_name, $date_released){
     $statement-> execute();
 	$statement->closeCursor();
 
-    //TODO Genre
+    // Genre
+    $query = "insert into categories values(:title, :artist, :genre)";
+    $statement= $db->prepare($query);
+
+    $statement->bindValue(':title',$title);
+    $statement->bindValue(':artist',$artist);
+    $statement->bindValue(':genre',$genre);
+    $statement-> execute();
+	$statement->closeCursor();
+
 
     //add song to playlist
 
@@ -140,8 +149,13 @@ function addSong($title, $artist, $album_name, $date_released){
     Date Released:
     <input type="text" class="form-control" name="date_released" required />        
   </div>  
+  <div class="row mb-3 mx-3">
+    Genre:
+    <input type="text" class="form-control" name="genre" required />        
+  </div>  
   <input type="submit" value="Add" name="btnAction" class="btn btn-dark" 
-        title="insert a friend" />
+        title="insert a song" />
+    
 
 </form>    
 

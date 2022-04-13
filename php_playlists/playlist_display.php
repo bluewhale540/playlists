@@ -217,7 +217,7 @@ function get_all_songs($playlist_id)
         $song['song_id'] = $song_id['song_id'];
         $song['name'] = $songinfo['title'];
         $song['artist'] = $songinfo['artist'];
-        $song['album'] = $songinfo['title'];
+        $song['album'] = $albuminfo['title'];
         $song['year'] = $albuminfo['date_released'];
 
         if (!empty($genreinfo)) {
