@@ -14,8 +14,8 @@
 $is_dev = getenv('DEV');
 if (!$is_dev) {
    /** S22, PHP (on local XAMPP or CS server) connect to MySQL instance (GCP) **/
-   $username = 'root';                      // or your username
-   $password = 'cs4750';        // or your password
+   $username = getenv('mysql_user');                      // or your username
+   $password = getenv('mysql_password');        // or your password
    $host = 'cs4750-playlists:us-east4:playlists-db';       // projectID = cs4750, SQL instance ID = db-demo
    $dbname = 'project';                   // database name = guestbook
    $dsn = "mysql:host=34.150.221.90;dbname=$dbname";       // connect PHP (XAMPP) to DB (GCP)
