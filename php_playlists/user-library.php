@@ -1,5 +1,6 @@
 <?php
 require('connect-db.php');
+require('userlibs/playlist_fxs.php');
 
 session_start();
 //check session
@@ -14,64 +15,15 @@ $playlist_to_delete = null;
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST['btnAction']))
     {
-        if($_POST['btnAction'] == "Delete")
-        {
+        if($_POST['btnAction'] == "Delete") {
             deletePlaylist($_POST['playlist_to_delete']);
             $list_of_playlists = getAllPlaylists();
         }
-        else if($_POST['btnAction'] == "View")
-        {
+        else if($_POST['btnAction'] == "View") {
             header("location: playlist_display.php");
             $_SESSION["playlist_id"] = $_POST['playlist_to_view'];
-            
         }
     }
-}
-
-function getAllPlaylists() {
-    global $db;
-    $query = "select * from playlist natural join created_by where user_id=:id";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':id', $_SESSION["id"]);
-    $statement->execute();
-
-    $results = $statement->fetchAll();
-    $statement->closeCursor();
-    return $results;
-}
-
-function deletePlaylist($playlist_id) {
-    global $db;
-
-    $query1 = "delete from created_by where playlist_id=:playlist_id";
-    $query2 = "delete from contains where playlist_id=:playlist_id";
-    $query3 = "delete from comment where playlist_id=:playlist_id";
-    $query4 = "delete from likes where playlist_id=:playlist_id";
-    $query5 = "delete from playlist created_by where playlist_id=:playlist_id";
-
-    $statement1 = $db->prepare($query1);
-    $statement2 = $db->prepare($query2);
-    $statement3 = $db->prepare($query3);
-    $statement4 = $db->prepare($query4);
-    $statement5 = $db->prepare($query5);
-
-    $statement1->bindValue(':playlist_id', $playlist_id);
-    $statement2->bindValue(':playlist_id', $playlist_id);
-    $statement3->bindValue(':playlist_id', $playlist_id);
-    $statement4->bindValue(':playlist_id', $playlist_id);
-    $statement5->bindValue(':playlist_id', $playlist_id);
-
-    $statement1->execute();
-    $statement2->execute();
-    $statement3->execute();
-    $statement4->execute();
-    $statement5->execute();
-
-    $statement1->closeCursor();
-    $statement2->closeCursor();
-    $statement3->closeCursor();
-    $statement4->closeCursor();
-    $statement5->closeCursor();
 }
 
 ?>
@@ -86,7 +38,8 @@ function deletePlaylist($playlist_id) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-    <title>Homepage</title>
+    <title>Library</title>
+    <link rel="icon" type="image/x-icon" href="style/spot.jpg">
 </head>
 
 <body> <!--everything displayed on screen-->
@@ -94,7 +47,7 @@ function deletePlaylist($playlist_id) {
 <!--Navbar-->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="homepage.php">Title</a>
+        <a href="#" class="img-fluid" style="margin-right: 8px"><img src="style/spot.jpg"></a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -111,7 +64,7 @@ function deletePlaylist($playlist_id) {
                     <a class="nav-link" href="search.php">Search</a>
                 </li>
             </ul>
-
+            <a class="btn btn-info mx-1" href="profile.php">My Profile</a>
             <a class="btn btn-primary" href="signout.php">Logout</a>
         </div>
     </div>
@@ -171,7 +124,6 @@ function deletePlaylist($playlist_id) {
         </td>
     </tr>
     <?php endforeach; ?>
-
 </table>
 </div>
 </body>

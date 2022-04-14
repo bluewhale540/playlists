@@ -14,20 +14,14 @@ $login_error_message = "";
  
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
- 
-
     if(empty($username_err) && empty($password_err)){
         $query = "select user_id, password from user where email = :email";
         $statement= $db->prepare($query);
         $statement->bindValue(':email', trim($_POST["email"]));
         $statement-> execute();
         $results = $statement->fetch();
-            
-
-                if(!empty($results)){                    
-                    
+                if(!empty($results)){
                         if(password_verify(trim($_POST["password"]), $results['password'])){
-
                             session_start();
 
                             $_SESSION["loggedin"] = true;
@@ -35,11 +29,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             $_SESSION["username"] = trim($_POST["email"]);                            
                             
                             header("location: homepage.php");
-                        } else{
-                            
+                        } else {
                             $login_error_message = "Incorrect email/password";
                         }
-                } else{
+                }
+                else {
                     $login_error_message = "Incorrect email/password";
                 }
             } 
@@ -58,7 +52,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
-    <title>Homepage</title>
+    <title>Login</title>
 </head>
 
 <body>

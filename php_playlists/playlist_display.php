@@ -248,29 +248,28 @@ function get_all_songs($playlist_id)
 
 <body>
 
-    <!--Navbar-->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="homepage.php">Title</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+<!--Navbar-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a href="#" class="img-fluid" style="margin-right: 8px"><img src="style/spot.jpg"></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarColor01">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="homepage.php">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="user-library.php">Playlists</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="search.php">Search</a>
-                    </li>
-                </ul>
-
-                <a class="btn btn-primary" href="signout.php">Logout</a>
-            </div>
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="homepage.php">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="user-library.php">Playlists</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="search.php">Search</a>
+                </li>
+            </ul>
+            <a class="btn btn-info mx-1" href="profile.php">My Profile</a>
+            <a class="btn btn-primary" href="signout.php">Logout</a>
         </div>
     </nav>
 

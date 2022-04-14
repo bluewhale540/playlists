@@ -1,4 +1,5 @@
 <?php
+
 require('connect-db.php');
 session_start();
 
@@ -33,10 +34,6 @@ function searchPlaylists($query_term)
     return $r;
 }
 
-?>
-
-<!DOCTYPE html>
-<html lang="en">
 
 <head>
     <meta charset="utf-8">
