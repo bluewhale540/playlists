@@ -33,7 +33,7 @@ function searchPlaylists($query_term)
     $q->closeCursor();
     return $r;
 }
-
+?>
 
 <head>
     <meta charset="utf-8">
@@ -66,10 +66,12 @@ function searchPlaylists($query_term)
                     </li>
                 </ul>
 
+                <a class="btn btn-info mx-1" href="profile.php">My Profile</a>
                 <a class="btn btn-primary" href="signout.php">Logout</a>
             </div>
         </div>
     </nav>
+
     <div class="container mt-3">
         <h1>Search Playlists</h1>
         <form action="search.php" method="get">
