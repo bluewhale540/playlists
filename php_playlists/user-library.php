@@ -1,6 +1,7 @@
 <?php
 require('connect-db.php');
 require('userlibs/playlist_fxs.php');
+require('userlibs/user_fxs.php');
 
 session_start();
 //check session
@@ -9,15 +10,28 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-$list_of_playlists = getAllPlaylists();
+$modifying = false;
+$list_of_playlists = [];
 $playlist_to_delete = null;
+$displayName = '';
+
+if (isset($_GET['user']) and ($_GET['user'] != $_SESSION['id'])) {
+    $uName = getUser($_GET['user'])['email'];
+    $displayName = "{$uName}'s";
+    $list_of_playlists = getAllPlaylists($_GET['user'], false);
+}
+else {
+    $modifying = true;
+    $displayName = 'My';
+    $list_of_playlists = getAllPlaylists($_SESSION['id'], true);
+}
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST['btnAction']))
     {
         if($_POST['btnAction'] == "Delete") {
             deletePlaylist($_POST['playlist_to_delete']);
-            $list_of_playlists = getAllPlaylists();
+            $list_of_playlists = getAllPlaylists($_SESSION['id']);
         }
         else if($_POST['btnAction'] == "View") {
             header("location: playlist_display.php");
@@ -71,23 +85,41 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 </nav>
 
 <div class="container mt-3">
-    <h1>My Library</h1>        
-    
-    <p><a href="add-playlist.php">Create a new playlist!</a></p>
-
+    <h1><?php echo $displayName?> Library</h1>
+    <?php if ($modifying) {
+        echo '<p><a href="add-playlist.php">Create a new playlist!</a></p>';
+    }
+    else {
+        echo '<p><a href="user-library.php">Go back to my library</a></p>';
+    }
+    ?>
 <hr/>
 
 <table class="table table-hover">
-    <thead>
-    <tr>
-        <th width="18%">Playlist Name</th>
-        <th width="5%"></th>
-        <th width="8%">Date Created</th>
-        <th width="5%">Likes</th>
-        <th width="6%">Privacy</th>
-        <th width="5%"></th>
-    </tr>
-    </thead>
+    <?php if ($modifying) {
+        echo '<thead>
+            <tr>
+                <th width="18%">Playlist Name</th>
+                <th width="5%"></th>
+                <th width="8%">Date Created</th>
+                <th width="5%">Likes</th>
+                <th width="6%">Privacy</th>
+                <th width="5%"></th>
+            </tr>
+        </thead>';
+    }
+    else {
+        echo '<thead>
+            <tr>
+                <th>Playlist Name</th>
+                <th></th>
+                <th>Date Created</th>
+                <th>Likes</th>
+            </tr>
+        </thead>';
+    }
+    ?>
+
     <?php foreach ($list_of_playlists as $playlist): ?>
     <tr>
         <td> <?php echo $playlist['name']; ?>
@@ -98,30 +130,33 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                     class="btn btn-info" />
                 <input type="hidden" name="playlist_to_view"
                     value="<?php echo $playlist['playlist_id'] ?>" />
-                    
+
             </form>
         </td>
         <td> <?php echo $playlist['date_created']; ?> </td>
         <td> <?php echo $playlist['num_likes']; ?> </td>
         <td>
             <?php
-            if($playlist['is_public'] == 0)
-            {
-                echo "Private";
+            if ($modifying) {
+                if ($playlist['is_public'] == 0) {
+                    echo "Private";
+                } else {
+                    echo "Public";
+                }
             }
-            else{
-                echo "Public";
-            }  
             ?>
         </td>
-        <td>
+        <?php if ($modifying) {
+            echo '<td>
             <form action="user-library.php" method="post">
                 <input type="submit" value="Delete" name="btnAction"
                     class="btn btn-danger" />
                 <input type="hidden" name="playlist_to_delete"
-                    value="<?php echo $playlist['playlist_id'] ?>" />
+                    value="<?php echo $playlist[`playlist_id`]?>" />
             </form>
-        </td>
+        </td>';
+        }
+        ?>
     </tr>
     <?php endforeach; ?>
 </table>
