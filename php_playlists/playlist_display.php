@@ -23,7 +23,7 @@ if (isset($_GET['playlist'])) {
     $owner = check_owner($_GET['playlist'], $_SESSION['id']);
     $public = is_public($_GET['playlist']);
     if (!$owner and !$public) {
-        header("location: user-library.php");
+        echo "You don't have access to this playlist";
         exit;
     }
 

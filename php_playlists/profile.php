@@ -36,8 +36,7 @@ $numFollowers = sizeof($followers);
 $numFollowing = sizeof($following);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if(!empty($_POST['btnAction']))
-    {
+    if(!empty($_POST['btnAction'])) {
         if($_POST['btnAction'] == "Delete") {
             deletePlaylist($_POST['playlist_to_delete']);
             $list_of_playlists = getAllPlaylists();
