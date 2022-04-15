@@ -56,6 +56,17 @@ function deletePlaylist($playlist_id) {
     }
 }
 
+function addComment($playlistId, $userId, $comment) {
+    global $db;
+    $query = 'INSERT INTO comment VALUES (:userId, :playlistId, :comment)';
+    $statement = $db->prepare($query);
+    $statement->bindValue(':userId', $userId);
+    $statement->bindValue(':playlistId', $playlistId);
+    $statement->bindValue(':comment', $comment);
+    $statement->execute();
+    $statement->closeCursor();
+}
+
 function getComments($playlist_id) {
     global $db;
     $query = 'select email, the_comment FROM comment 

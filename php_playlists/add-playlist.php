@@ -95,8 +95,8 @@ function addPlaylist($name, $date_created, $is_public) {
     <form name="mainForm" action="add-playlist.php" method="post">
         <div class="form-group row mb-3 mx-3">
             Playlist Name:
-            <input type="text" class="form-control" name="name" required
-                    value="<?php if ($playlist_to_add!=null) echo $playlist_to_add['name'] ?>"
+            <input type="text" class="form-control" name="name"
+                   required value="<?php if ($playlist_to_add!=null) echo $playlist_to_add['name'] ?>"
             >
         </div>
         <fieldset class="form-group mb-3 mx-3">

@@ -38,13 +38,19 @@ else {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Like") {
+    if ($_POST['btnAction'] == "Like") {
         like_playlist($_GET['playlist'], $_SESSION['id']);
-    } else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Unlike") {
+    }
+    else if ($_POST['btnAction'] == "Unlike") {
         unlike_playlist($_GET['playlist'], $_SESSION['id']);
-    } else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Delete") {
+    }
+    else if ($_POST['btnAction'] == "Delete") {
         delete_song($_POST['song_to_delete']);
         $list_of_songs = get_all_songs($_GET["playlist"]);
+    }
+    else if ($_POST['btnAction'] == 'Comment') {
+        addComment($_GET['playlist'], $_SESSION['id'], $_POST['commentText']);
+        $comments = getComments($_GET['playlist']);
     }
 }
 
@@ -145,8 +151,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <h2>Comments</h2>
             </div>
         </div>
+        Add a comment:
+        <form class="input-group mb-2" method="post">
+            <input type="text" class="form-control" name="commentText"
+                   required aria-describedby="button-addon2"
+            >
+            <button class="btn btn-primary" name="btnAction" value="Comment" type="submit" id="button-addon2">Submit</button>
+        </form>
         <?php foreach ($comments as $comment) : ?>
-        <div class="card text-white bg-primary mb-3" style="max-width: 100rem;">
+        <div class="card text-white bg-primary mb-2" style="max-width: 100rem;">
             <div class="card-header">
                 <span class="left"><?php echo $comment['email']?></span>
             </div>

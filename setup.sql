@@ -75,7 +75,7 @@ CREATE TABLE comment (
     user_id INT NOT NULL,
     playlist_id INT NOT NULL,
     the_comment VARCHAR(1000) NOT NULL,
-    PRIMARY KEY (user_id, playlist_id),
+    PRIMARY KEY (user_id, playlist_id, the_comment),
     FOREIGN KEY (user_id) REFERENCES user(user_id),
     FOREIGN KEY (playlist_id) REFERENCES playlist(playlist_id)
 );
