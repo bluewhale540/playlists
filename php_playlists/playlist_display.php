@@ -106,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         <hr />
         <h2>Playlist Songs</h2>
-        <?php if ($_SESSION["owns_playlist"] == 0 || 1) { //GET RID OF the '|| 1' TO ALLOW ANYONE INCLUDING OWNER TO LIKE PLAYLIST
+        <?php if ($owner == 0 || 1) { //GET RID OF the '|| 1' TO ALLOW ANYONE INCLUDING OWNER TO LIKE PLAYLIST
             if ($likes_playlist) {
                 echo "<form method='post' action='#'> 
                     <input type='submit' value='Unlike' name='btnAction' class='btn btn-secondary' title='unlike the playlist' />
