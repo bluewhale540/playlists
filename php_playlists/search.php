@@ -12,15 +12,8 @@ $search_results = null;
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" and !empty($_GET["search"])) {
     $search_results = searchPlaylists($_GET["search"]);
-} else if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    if (!empty($_POST['btnAction'])) {
-        if ($_POST['btnAction'] == "View") {
-
-            header("location: playlist_display.php");
-            $_SESSION["playlist_id"] = $_POST["playlist_to_view"];
-        }
-    }
 }
+
 function searchPlaylists($query_term)
 {
     global $db;
@@ -106,10 +99,8 @@ function searchPlaylists($query_term)
                 <tr>
                     <td> <?php echo $playlist['name']; ?> </td>
                     <td>
-                        <form action="search.php" method="post">
-                            <input type="submit" value="View" name="btnAction" class="btn btn-info" />
-                            <input type="hidden" name="playlist_to_view" value="<?php echo $playlist['playlist_id'] ?>" />
-                        </form>
+                        <a href="<?php echo "playlist_display.php?playlist={$playlist['playlist_id']}"?>"
+                           class="btn btn-info">View</a>
                     </td>
                     <td> <?php echo $playlist['date_created']; ?> </td>
                     <td> <?php echo $playlist['num_likes']; ?> </td>
