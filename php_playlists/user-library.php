@@ -27,15 +27,10 @@ else {
 }
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if(!empty($_POST['btnAction']))
-    {
+    if(!empty($_POST['btnAction'])) {
         if($_POST['btnAction'] == "Delete") {
             deletePlaylist($_POST['playlist_to_delete']);
-            $list_of_playlists = getAllPlaylists($_SESSION['id']);
-        }
-        else if($_POST['btnAction'] == "View") {
-            header("location: playlist_display.php");
-            $_SESSION["playlist_id"] = $_POST['playlist_to_view'];
+            $list_of_playlists = getAllPlaylists($_SESSION['id'], true);
         }
     }
 }
@@ -125,13 +120,8 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         <td> <?php echo $playlist['name']; ?>
         </td>
         <td>
-            <form action="user-library.php" method="post">
-                <input type="submit" value="View" name="btnAction"
-                    class="btn btn-info" />
-                <input type="hidden" name="playlist_to_view"
-                    value="<?php echo $playlist['playlist_id'] ?>" />
-
-            </form>
+            <a href="<?php echo "playlist_display.php?playlist={$playlist['playlist_id']}"?>"
+               class="btn btn-info">View</a>
         </td>
         <td> <?php echo $playlist['date_created']; ?> </td>
         <td> <?php echo $playlist['num_likes']; ?> </td>
@@ -147,14 +137,16 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             ?>
         </td>
         <?php if ($modifying) {
-            echo '<td>
+            ?>
+            <td>
             <form action="user-library.php" method="post">
                 <input type="submit" value="Delete" name="btnAction"
                     class="btn btn-danger" />
                 <input type="hidden" name="playlist_to_delete"
-                    value="<?php echo $playlist[`playlist_id`]?>" />
+                    value="<?php echo $playlist['playlist_id']?>" />
             </form>
-        </td>';
+        </td>
+        <?php
         }
         ?>
     </tr>

@@ -1,5 +1,8 @@
 <?php
 require('connect-db.php');
+require('userlibs/playlist_fxs.php');
+require('userlibs/song_fxs.php');
+
 session_start();
 
 //check session
@@ -8,228 +11,42 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
-$_SESSION["is_public"] = 0;
-$_SESSION["owns_playlist"] = check_owner($_SESSION["playlist_id"]);
+$owner = false;
+$public = false;
 
-$playlist_name = get_playlist_info($_SESSION["playlist_id"]);
+$comments = [];
+$likes_playlist = false;
+$list_of_songs = [];
+$playlist_name = '';
 
-if ($_SESSION["is_public"] == 0 && $_SESSION["owns_playlist"] == 0) {
-
-    header("location: user-library.php");
-    exit;
-}
-
-//  echo "owns playlist";
-//  echo $_SESSION["owns_playlist"];
-
-$likes_playlist = check_if_likes();
-$list_of_songs = get_all_songs($_SESSION["playlist_id"]); //get
-
-function check_if_likes()
-{
-    global $db;
-    $query = "select * from likes where playlist_id = :playlist_id and user_id= :user_id";
-
-    $statement = $db->prepare($query);
-    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
-    $statement->bindValue(':user_id', $_SESSION["id"]);
-    $statement->execute();
-
-    $results = $statement->fetch();
-
-    $statement->closeCursor();
-
-    if (empty($results)) {
-        return 0;
-    } else {
-        return 1;
+if (isset($_GET['playlist'])) {
+    $comments = getComments($_GET['playlist']);
+    $owner = check_owner($_GET['playlist'], $_SESSION['id']);
+    $public = is_public($_GET['playlist']);
+    if (!$owner and !$public) {
+        header("location: user-library.php");
+        exit;
     }
+
+    $likes_playlist = check_if_likes($_GET['playlist'], $_SESSION['id']);
+    $list_of_songs = get_all_songs($_GET["playlist"]); //get
+    $playlist_name = get_playlist_name($_GET["playlist"]);
+}
+else {
+    echo 'no playlist given';
+    exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Like") {
-        like_playlist();
+        like_playlist($_GET['playlist'], $_SESSION['id']);
     } else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Unlike") {
-        unlike_playlist();
+        unlike_playlist($_GET['playlist'], $_SESSION['id']);
     } else if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Delete") {
         delete_song($_POST['song_to_delete']);
-        $list_of_songs = get_all_songs($_SESSION["playlist_id"]);
+        $list_of_songs = get_all_songs($_GET["playlist"]);
     }
 }
-
-function like_playlist()
-{
-    global $db;
-    $query = "insert into likes values(:user_id,:playlist_id) ";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
-    $statement->bindValue(':user_id', $_SESSION["id"]);
-    $statement->execute();
-    $statement->closeCursor();
-
-    $query = "update playlist set num_likes = num_likes+1 where playlist_id= :playlist_id ";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
-    $statement->execute();
-    $statement->closeCursor();
-
-    header("location: playlist_display.php");
-}
-
-function unlike_playlist()
-{
-    global $db;
-    $query = "delete from likes where playlist_id = :playlist_id and user_id= :user_id";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
-    $statement->bindValue(':user_id', $_SESSION["id"]);
-    $statement->execute();
-    $statement->closeCursor();
-
-    $query = "update playlist set num_likes = num_likes-1 where playlist_id= :playlist_id ";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
-    $statement->execute();
-    $statement->closeCursor();
-
-    header("location: playlist_display.php");
-}
-
-function delete_song($song_id)
-{
-    global $db;
-    $query = "delete from in_album where song_id = :song_id";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':song_id', $song_id);
-    $statement->execute();
-    $statement->closeCursor();
-
-    $query = "delete from contains where song_id = :song_id";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':song_id', $song_id);
-    $statement->execute();
-    $statement->closeCursor();
-
-    $query = "delete from song where song_id = :song_id";
-    $statement = $db->prepare($query);
-    $statement->bindValue(':song_id', $song_id);
-    $statement->execute();
-    $statement->closeCursor();
-}
-
-function check_owner($playlist_id)
-{
-    global $db;
-    $query = "select * from created_by where playlist_id = :playlist_id and user_id= :user_id";
-
-    $statement = $db->prepare($query);
-    $statement->bindValue(':playlist_id', $_SESSION["playlist_id"]);
-    $statement->bindValue(':user_id', $_SESSION["id"]);
-    $statement->execute();
-
-    $results = $statement->fetch();
-
-    $statement->closeCursor();
-
-    if (empty($results)) {
-        return 0;
-    } else {
-        return 1;
-    }
-}
-
-function get_playlist_info($playlist_id)
-{
-    global $db;
-    $query = "select * from playlist where playlist_id = :playlist_id";
-
-    $statement = $db->prepare($query);
-    $statement->bindValue(':playlist_id', $playlist_id);
-    $statement->execute();
-
-    $results = $statement->fetch();
-
-    $statement->closeCursor();
-
-    $_SESSION["is_public"] = $results['is_public'];
-    return $results['name'];
-}
-
-function get_all_songs($playlist_id)
-{
-    global $db;
-    $query = "select * from contains where playlist_id = :playlist_id";
-
-    $statement = $db->prepare($query);
-    $statement->bindValue(':playlist_id', $playlist_id);
-    $statement->execute();
-
-    $results = $statement->fetchAll();
-
-    $statement->closeCursor();
-    $song_list = [];
-
-    foreach ($results as $song_id) {
-        //get name and artists 
-        $query = "select * from song where song_id = :song_id";
-        $statement = $db->prepare($query);
-        $statement->bindValue(':song_id', $song_id['song_id']);
-        $statement->execute();
-
-        $songinfo = $statement->fetch();
-
-        $statement->closeCursor();
-
-        //get album that song is in
-
-        $query = "select album_id from in_album where song_id = :song_id";
-        $statement = $db->prepare($query);
-        $statement->bindValue(':song_id', $song_id['song_id']);
-        $statement->execute();
-
-        $album_id = $statement->fetch();
-
-        $statement->closeCursor();
-
-        //get info from album 
-
-        $query = "select * from album where album_id = :album_id";
-        $statement = $db->prepare($query);
-        $statement->bindValue(':album_id', $album_id['album_id']);
-        $statement->execute();
-
-        $albuminfo = $statement->fetch();
-
-        $statement->closeCursor();
-        //get genre
-        $query = "select * from categories where title = :title and artist= :artist";
-        $statement = $db->prepare($query);
-        $statement->bindValue(':title', $songinfo['title']);
-        $statement->bindValue(':artist', $songinfo['artist']);
-        $statement->execute();
-
-        $genreinfo = $statement->fetch();
-
-        $statement->closeCursor();
-        //combine info together
-
-        $song = [];
-        $song['song_id'] = $song_id['song_id'];
-        $song['name'] = $songinfo['title'];
-        $song['artist'] = $songinfo['artist'];
-        $song['album'] = $albuminfo['title'];
-        $song['year'] = $albuminfo['date_released'];
-
-        if (!empty($genreinfo)) {
-            $song['genre'] = $genreinfo['genre'];
-        } else {
-            $song['genre'] = "N/A";
-        }
-        array_push($song_list, $song);
-    }
-    return $song_list;
-}
-
 
 ?>
 
@@ -271,7 +88,8 @@ function get_all_songs($playlist_id)
             <a class="btn btn-info mx-1" href="profile.php">My Profile</a>
             <a class="btn btn-primary" href="signout.php">Logout</a>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div class="container mt-3">
         <h1><?php echo $playlist_name ?></h1>
@@ -289,8 +107,6 @@ function get_all_songs($playlist_id)
         </form>";
             }
         } ?>
-
-
 
         <!-- <div class="row justify-content-center">   -->
         <table class="table table-hover">
@@ -319,13 +135,10 @@ function get_all_songs($playlist_id)
                     </td>
                 </tr>
             <?php endforeach; ?>
-
-
         </table>
 
         <?php
         echo "comment section here! ";
         ?>
 </body>
-
 </html>
