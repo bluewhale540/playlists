@@ -88,9 +88,13 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo '<p><a href="user-library.php">Go back to my library</a></p>';
     }
     ?>
+</div>
+
 <hr/>
 
-<table class="table table-hover">
+<div class="container mb-4">
+    <h2>My Playlists</h2>
+    <table class="table table-hover">
     <?php if ($modifying) {
         echo '<thead>
             <tr>
@@ -153,5 +157,12 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     <?php endforeach; ?>
 </table>
 </div>
+
+<hr/>
+
+<div class="container">
+    <h2>Liked Playlists</h2>
+</div>
+
 </body>
 </html>

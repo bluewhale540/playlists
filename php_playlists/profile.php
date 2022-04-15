@@ -32,6 +32,8 @@ else {
     $following = getFollowing($_SESSION['id']);
 }
 
+$numFollowers = sizeof($followers);
+$numFollowing = sizeof($following);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST['btnAction']))
@@ -142,23 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </tr>
         <?php endforeach; ?>
     </table>
-    <h2>Followers</h2>
-    <div class="row">
-        <?php foreach ($followers as $follower): ?>
-        <div class="col-lg-3 d-flex align-items-stretch">
-            <div class="card text-white bg-primary mb-3 w-100" style="max-width: 20rem;">
-                <div class="card-header"><?php echo $follower['email'] ?></div>
-
-                <div class="card-body d-flex flex-column">
-                    <h4 class="card-title"><?php echo $follower['email'] ?></h4>
-                    <p class="card-text"><?php echo sizeof(getFollowers($follower['user_id'])) ?> followers</p>
-                    <a href="<?php echo "profile.php?user={$follower['user_id']}" ?>" class="btn mt-auto btn-secondary stretched-link">View Profile</a>
-                </div>
-            </div>
-        </div>
-        <?php endforeach; ?>
-    </div>
-    <h2>Following</h2>
+    <h2>Following (<?php echo $numFollowing?>)</h2>
     <div class="row">
         <?php foreach ($following as $followed): ?>
             <div class="col-lg-3 d-flex align-items-stretch">
@@ -172,6 +158,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </div>
                 </div>
             </div>
+        <?php endforeach; ?>
+    </div>
+    <h2>Followers (<?php echo $numFollowers?>)</h2>
+    <div class="row">
+        <?php foreach ($followers as $follower): ?>
+        <div class="col-lg-3 d-flex align-items-stretch">
+            <div class="card text-white bg-primary mb-3 w-100" style="max-width: 20rem;">
+                <div class="card-header"><?php echo $follower['email'] ?></div>
+
+                <div class="card-body d-flex flex-column">
+                    <h4 class="card-title"><?php echo $follower['email'] ?></h4>
+                    <p class="card-text"><?php echo sizeof(getFollowers($follower['user_id'])) ?> followers</p>
+                    <a href="<?php echo "profile.php?user={$follower['user_id']}" ?>" class="btn mt-auto btn-secondary stretched-link">View Profile</a>
+                </div>
+            </div>
+        </div>
         <?php endforeach; ?>
     </div>
 </div>

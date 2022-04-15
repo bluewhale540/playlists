@@ -14,8 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" and !empty($_GET["search"])) {
     $search_results = searchPlaylists($_GET["search"]);
 }
 
-function searchPlaylists($query_term)
-{
+function searchPlaylists($query_term) {
     global $db;
     $query = "select * from playlist where name LIKE :query_term";
     $q = $db->prepare($query);
@@ -41,7 +40,7 @@ function searchPlaylists($query_term)
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="homepage.php">Title</a>
+            <a href="#" class="img-fluid" style="margin-right: 8px"><img src="style/spot.jpg"></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -67,9 +66,9 @@ function searchPlaylists($query_term)
 
     <div class="container mt-3">
         <h1>Search Playlists</h1>
-        <form action="search.php" method="get">
-            <input type="text" name="search">
-            <input type="submit" value="Search" name="btnAction">
+        <form class="input-group" action="search.php" method="get" style="width:50%">
+            <input type="text" class="form-control" name="search" required  aria-describedby="searchButton">
+            <button type="submit" value="Search" name="btnAction" class="btn btn-primary">Search</button>
         </form>
 
     </div>
@@ -84,6 +83,7 @@ function searchPlaylists($query_term)
             <h2>No results found...</h2>
         </div>
     <?php else : ?>
+        <div class="container mt-3">
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -116,6 +116,7 @@ function searchPlaylists($query_term)
                 </tr>
             <?php endforeach; ?>
         </table>
+        </div>
     <?php endif; ?>
 </body>
 

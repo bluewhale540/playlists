@@ -54,5 +54,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
         <a href="user-library.php" class="btn btn-danger ml-3"> View My Library</a>
     </p>
 </div>
+
+<hr/>
+
+<div class="container">
+    <h2>Your Feed</h2>
+</div>
 </body>
 </html>

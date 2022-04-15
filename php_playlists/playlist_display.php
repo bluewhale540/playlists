@@ -37,6 +37,8 @@ else {
     exit;
 }
 
+$numComments = sizeof($comments);
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($_POST['btnAction'] == "Like") {
         like_playlist($_GET['playlist'], $_SESSION['id']);
@@ -147,8 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </table>
 
         <div class="row">
-            <div class="col mb-2">
-                <h2>Comments</h2>
+            <div class="col">
+                <h2>Comments (<?php echo $numComments?>)</h2>
             </div>
         </div>
         Add a comment:
@@ -159,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <button class="btn btn-primary" name="btnAction" value="Comment" type="submit" id="button-addon2">Submit</button>
         </form>
         <?php foreach ($comments as $comment) : ?>
-        <div class="card text-white bg-primary mb-2" style="max-width: 100rem;">
+        <div class="card text-white border-primary mb-2" style="max-width: 100rem;">
             <div class="card-header">
                 <span class="left"><?php echo $comment['email']?></span>
             </div>
