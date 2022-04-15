@@ -20,7 +20,6 @@ $list_of_songs = [];
 $playlist_name = '';
 
 if (isset($_GET['playlist'])) {
-    $comments = getComments($_GET['playlist']);
     $owner = check_owner($_GET['playlist'], $_SESSION['id']);
     $public = is_public($_GET['playlist']);
     if (!$owner and !$public) {
@@ -31,6 +30,7 @@ if (isset($_GET['playlist'])) {
     $likes_playlist = check_if_likes($_GET['playlist'], $_SESSION['id']);
     $list_of_songs = get_all_songs($_GET["playlist"]); //get
     $playlist_name = get_playlist_name($_GET["playlist"]);
+    $comments = getComments($_GET['playlist']);
 }
 else {
     echo 'no playlist given';
@@ -100,13 +100,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <h2>Playlist Songs</h2>
         <?php if ($_SESSION["owns_playlist"] == 0 || 1) { //GET RID OF the '|| 1' TO ALLOW ANYONE INCLUDING OWNER TO LIKE PLAYLIST
             if ($likes_playlist) {
-                echo "<form method='post' action='playlist_display.php'> <input type='submit' value='Unlike' name='btnAction' class='btn btn-secondary' title='unlike the playlist' /></form>";
+                echo "<form method='post' action='#'> 
+                    <input type='submit' value='Unlike' name='btnAction' class='btn btn-secondary' title='unlike the playlist' />
+                    </form>";
             } else {
-                echo "<form method='post' action='playlist_display.php'>
-        <input type='submit' value='Like' name='btnAction' class='btn btn-success' title='like the playlist' />
-        </form>";
+                echo "<form method='post' action='#'>
+                    <input type='submit' value='Like' name='btnAction' class='btn btn-success' title='like the playlist' />
+                    </form>";
             }
-        } ?>
+        }
+        ?>
 
         <!-- <div class="row justify-content-center">   -->
         <table class="table table-hover">
@@ -137,8 +140,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php endforeach; ?>
         </table>
 
-        <?php
-        echo "comment section here! ";
-        ?>
+        <div class="row">
+            <div class="col mb-2">
+                <h2>Comments</h2>
+            </div>
+        </div>
+        <?php foreach ($comments as $comment) : ?>
+        <div class="card text-white bg-primary mb-3" style="max-width: 100rem;">
+            <div class="card-header">
+                <span class="left"><?php echo $comment['email']?></span>
+            </div>
+            <div class="card-body">
+                <p class="card-text"><?php echo $comment['the_comment']?></p>
+            </div>
+        </div>
+        <?php endforeach; ?>
 </body>
 </html>

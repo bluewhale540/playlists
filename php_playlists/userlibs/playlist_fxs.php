@@ -108,7 +108,7 @@ function like_playlist($playlistId, $userId) {
     $statement->execute();
     $statement->closeCursor();
 
-    header("location: playlist_display.php?playlist={$playlistId}");
+    header("location: playlist_display.php?playlist=".$playlistId);
 }
 
 function unlike_playlist($playlistId, $userId) {
@@ -126,7 +126,7 @@ function unlike_playlist($playlistId, $userId) {
     $statement->execute();
     $statement->closeCursor();
 
-    header("location: playlist_display.php?playlist={$playlistId}");
+    header("location: playlist_display.php?playlist=".$playlistId);
 }
 
 function check_owner($playlistId, $userId): int
