@@ -11,26 +11,34 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 }
 
 $modifying = false;
-$list_of_playlists = [];
-$playlist_to_delete = null;
+$userPlaylists = [];
+$playlistToDelete = null;
+$likedPlaylists = [];
+$playlistToUnlike = null;
 $displayName = '';
 
 if (isset($_GET['user']) and ($_GET['user'] != $_SESSION['id'])) {
     $uName = getUser($_GET['user'])['email'];
     $displayName = "{$uName}'s";
-    $list_of_playlists = getAllPlaylists($_GET['user'], false);
+    $userPlaylists = getAllPlaylists($_GET['user'], false);
+    $likedPlaylists = getLikedPlaylists($_GET['user'], false);
 }
 else {
     $modifying = true;
     $displayName = 'My';
-    $list_of_playlists = getAllPlaylists($_SESSION['id'], true);
+    $userPlaylists = getAllPlaylists($_SESSION['id'], true);
+    $likedPlaylists = getLikedPlaylists($_SESSION['id'], true);
 }
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST['btnAction'])) {
         if($_POST['btnAction'] == "Delete") {
             deletePlaylist($_POST['playlist_to_delete']);
-            $list_of_playlists = getAllPlaylists($_SESSION['id'], true);
+            $userPlaylists = getAllPlaylists($_SESSION['id'], true);
+        }
+        else if ($_POST['btnAction'] == 'Unlike') {
+            unlike_playlist($_POST['playlist_to_unlike'], $_SESSION['id']);
+            $likedPlaylists = getLikedPlaylists($_SESSION['id'], true);
         }
     }
 }
@@ -119,7 +127,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     ?>
 
-    <?php foreach ($list_of_playlists as $playlist): ?>
+    <?php foreach ($userPlaylists as $playlist): ?>
     <tr>
         <td> <?php echo $playlist['name']; ?>
         </td>
@@ -162,6 +170,68 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <div class="container">
     <h2>Liked Playlists</h2>
+    <table class="table table-hover">
+        <?php if ($modifying) {
+            echo '<thead>
+            <tr>
+                <th width="18%">Playlist Name</th>
+                <th width="5%"></th>
+                <th width="8%">Date Created</th>
+                <th width="5%">Likes</th>
+                <th width="6%">Privacy</th>
+                <th width="5%"></th>
+            </tr>
+        </thead>';
+        }
+        else {
+            echo '<thead>
+            <tr>
+                <th>Playlist Name</th>
+                <th></th>
+                <th>Date Created</th>
+                <th>Likes</th>
+            </tr>
+        </thead>';
+        }
+        ?>
+
+        <?php foreach ($likedPlaylists as $playlist): ?>
+            <tr>
+                <td> <?php echo $playlist['name']; ?>
+                </td>
+                <td>
+                    <a href="<?php echo "playlist_display.php?playlist={$playlist['playlist_id']}"?>"
+                       class="btn btn-info">View</a>
+                </td>
+                <td> <?php echo $playlist['date_created']; ?> </td>
+                <td> <?php echo $playlist['num_likes']; ?> </td>
+                <td>
+                    <?php
+                    if ($modifying) {
+                        if ($playlist['is_public'] == 0) {
+                            echo "Private";
+                        } else {
+                            echo "Public";
+                        }
+                    }
+                    ?>
+                </td>
+                <?php if ($modifying) {
+                    ?>
+                    <td>
+                        <form action="user-library.php" method="post">
+                            <input type="submit" value="Unlike" name="btnAction"
+                                   class="btn btn-danger" />
+                            <input type="hidden" name="playlist_to_unlike"
+                                   value="<?php echo $playlist['playlist_id']?>" />
+                        </form>
+                    </td>
+                    <?php
+                }
+                ?>
+            </tr>
+        <?php endforeach; ?>
+    </table>
 </div>
 
 </body>
