@@ -35,9 +35,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         if($_POST['btnAction'] == "Delete") {
             deletePlaylist($_POST['playlist_to_delete']);
             $userPlaylists = getAllPlaylists($_SESSION['id'], true);
+            $likedPlaylists = getLikedPlaylists($_SESSION['id'], true);
         }
         else if ($_POST['btnAction'] == 'Unlike') {
             unlike_playlist($_POST['playlist_to_unlike'], $_SESSION['id']);
+            $userPlaylists = getAllPlaylists($_SESSION['id'], true);
             $likedPlaylists = getLikedPlaylists($_SESSION['id'], true);
         }
     }
@@ -221,7 +223,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <td>
                         <form action="user-library.php" method="post">
                             <input type="submit" value="Unlike" name="btnAction"
-                                   class="btn btn-danger" />
+                                   class="btn btn-secondary" />
                             <input type="hidden" name="playlist_to_unlike"
                                    value="<?php echo $playlist['playlist_id']?>" />
                         </form>

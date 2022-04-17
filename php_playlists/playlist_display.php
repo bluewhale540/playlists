@@ -42,9 +42,11 @@ $numComments = sizeof($comments);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($_POST['btnAction'] == "Like") {
         like_playlist($_GET['playlist'], $_SESSION['id']);
+        $likes_playlist = check_if_likes($_GET['playlist'], $_SESSION['id']);
     }
     else if ($_POST['btnAction'] == "Unlike") {
         unlike_playlist($_GET['playlist'], $_SESSION['id']);
+        $likes_playlist = check_if_likes($_GET['playlist'], $_SESSION['id']);
     }
     else if ($_POST['btnAction'] == "Delete") {
         delete_song($_POST['song_to_delete']);
