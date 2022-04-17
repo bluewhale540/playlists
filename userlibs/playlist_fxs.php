@@ -157,6 +157,16 @@ function check_owner($playlistId, $userId): int
     }
 }
 
+function get_owner($playlistId){
+    global $db;
+    $query = $db->prepare('SELECT user_id, email from created_by  natural join user where playlist_id=:playlist_id');
+    $query->bindValue(':playlist_id', $playlistId);
+    $query->execute();
+    $results = $query->fetch();
+    $query->closeCursor();
+    return $results;
+}
+
 function get_playlist_name($playlistId) {
     global $db;
     $query = "select name from playlist where playlist_id = :playlist_id";

@@ -2,7 +2,7 @@
 require('connect_db.php');
 require('userlibs/playlist_fxs.php');
 require('userlibs/song_fxs.php');
-
+require('userlibs/follower_fxs.php');
 session_start();
 
 //check session
@@ -18,10 +18,14 @@ $comments = [];
 $likes_playlist = false;
 $list_of_songs = [];
 $playlist_name = '';
-
+$playlist_owner = null;
+$is_following = null;
 if (isset($_GET['playlist'])) {
     $owner = check_owner($_GET['playlist'], $_SESSION['id']);
     $public = is_public($_GET['playlist']);
+    $playlist_owner = get_owner($_GET['playlist']);
+    $is_following = checkFollowing($_SESSION['id'], $playlist_owner['user_id']);
+   
     if (!$owner and !$public) {
         echo "You don't have access to this playlist";
         exit;
@@ -55,6 +59,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     else if ($_POST['btnAction'] == 'Comment') {
         addComment($_GET['playlist'], $_SESSION['id'], $_POST['commentText']);
         $comments = getComments($_GET['playlist']);
+    } else if ($_POST['btnAction'] == 'Follow'){
+        followUser($_SESSION['id'], $playlist_owner['user_id']);
+        $is_following = checkFollowing($_SESSION['id'], $playlist_owner['user_id']);
+    } else if ($_POST['btnAction'] == 'Un-Follow'){
+        unFollowUser($_SESSION['id'], $playlist_owner['user_id']);
+        $is_following = checkFollowing($_SESSION['id'], $playlist_owner['user_id']);
     }
 }
 
@@ -104,6 +114,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     <div class="container mt-3">
         <h1><?php echo $playlist_name ?></h1>
+        <p>Made by: <?php echo $playlist_owner['email']?><p>
+            <?php if ($is_following):?>
+                <form method="post" action="#">
+                <input type="submit" value="Un-Follow" name="btnAction"  class='btn btn-secondary' title='stop following this user'/>
+
+            </form>
+            <?php else :?>
+               <form method="post" action="#">
+                <input type="submit" value="Follow" name="btnAction"  class='btn btn-secondary' title='follow this user'/>
+
+            </form>
+            <?php endif;?>
         <p><a href="library.php">Go to my playlist library!</a></p>
         <p><a href="add_song_to_playlist.php">Add song to playlist!</a></p>
 

@@ -74,7 +74,7 @@ function searchPlaylists($query_term) {
 
     </div>
     <hr />
-    <?php if ($search_results == null) : ?>
+    <?php if ($search_results === null) : ?>
         <div class="container mt-3">
             <h2>Search for playlists using the form.</h2>
         </div>
