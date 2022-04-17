@@ -14,7 +14,7 @@ switch (@parse_url($_SERVER['REQUEST_URI'])['path']) {
     case '/library.php':
         require 'library.php';
         break;
-    case 'add_playlist.php':
+    case '/add_playlist.php':
         require 'add_playlist.php';
         break;
     case '/search.php':
