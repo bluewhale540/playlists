@@ -1,5 +1,5 @@
 <?php
-require('connect-db.php');
+require('connect_db.php');
 session_start();
  
 //check session
@@ -94,7 +94,7 @@ function addSong($title, $artist, $album_name, $date_released, $genre){
 <head>
     <meta charset="UTF-8">
     <title>Add song to playlist</title>
-    <link rel="stylesheet" type="text/css" href="style/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
@@ -116,7 +116,7 @@ function addSong($title, $artist, $album_name, $date_released, $genre){
                     <a class="nav-link" href="homepage.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="user-library.php">Playlists</a>
+                    <a class="nav-link" href="library.php">Playlists</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="search.php">Search</a>

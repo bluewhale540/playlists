@@ -1,5 +1,5 @@
 <?php
-require('connect-db.php');
+require('connect_db.php');
 $email = "";
 $password = "";
 $login_error_message = "";
@@ -35,7 +35,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         $statement->bindValue(':password', password_hash(trim($_POST["password"]), PASSWORD_DEFAULT));
         
         if($statement-> execute()==true) {
-            header("location: /login");
+            header("location: login.php");
         }
         else {
             echo "ERROR";
@@ -49,13 +49,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="style/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="../style/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     <title>Homepage</title>
-    <link rel="icon" type="image/x-icon" href="style/spot.jpg">
+    <link rel="icon" type="image/x-icon" href="../style/spot.jpg">
 </head>
 <body>
     <div class="container w-25 mt-5">
@@ -72,10 +72,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <span class="invalid-feedback"><?php echo $password_err; ?></span>
             </div>
             <div class="form-group mb-1">
-                <input type="submit" class="btn btn-primary" value="Submit">
+                <input type="submit" href="signup.php" class="btn btn-primary" value="Submit">
                 <input type="reset" class="btn btn-secondary ml-2" value="Reset">
             </div>
-            <p> <a href="/login">Login with Existing Account</a></p>
+            <p> <a href="login.php">Login with Existing Account</a></p>
         </form>
     </div>    
 </body>

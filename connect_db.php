@@ -1,35 +1,36 @@
 <?php
 // Remember to start the database server (or GCP SQL instance) before trying to connect to it
-
-////////////////////////////////////////////
-/** S22, PHP (on Google Standard App Engine) connect to MySQL instance (GCP) **/
-// $username = 'root';                      // or your username
-// $password = 'your-root-password';        // or your password
-// $host = 'cs4750:us-east4:db-demo';       // projectID = cs4750, SQL instance ID = db-demo
-// $dbname = 'guestbook';                   // database name = guestbook
-// $dsn = "mysql:unix_socket=/cloudsql/cs4750:us-east4:db-demo;dbname=guestbook";
-
 // to get instance connection name, go to GCP SQL overview page
 ////////////////////////////////////////////
-$is_dev = getenv('DEV');
-if (!$is_dev) {
-   /** S22, PHP (on local XAMPP or CS server) connect to MySQL instance (GCP) **/
-   $username = getenv('mysql_user');                      // or your username
-   $password = getenv('mysql_password');        // or your password
-   $host = 'cs4750-playlists:us-east4:playlists-db';       // projectID = cs4750, SQL instance ID = db-demo
-   $dbname = 'project';                   // database name = guestbook
-   $dsn = "mysql:host=34.150.221.90;dbname=$dbname";       // connect PHP (XAMPP) to DB (GCP)
-} else {
+if (getenv('IS_APPENGINE') == 'true') {
+    $username = getenv('mysql_user');
+    $password = getenv('mysql_password');
+    $dbName = 'project';
+    $connectionName = getenv('mysql_conn');
+    $socketDir = '/cloudsql';
 
-   $username = 'user';
-   $password = 'password';
-   $host = 'localhost:3306';
-   $dbname = 'project';
-   $dsn = "mysql:host=$host;dbname=$dbname";
+    $dsn = sprintf(
+        'mysql:dbname=%s;unix_socket=%s/%s',
+        $dbName,
+        $socketDir,
+        $connectionName
+    );
 }
+elseif (getenv('DEV') != 'true') {
+    $username = getenv('mysql_user');
+    $password = getenv('mysql_password');
+    $dbName = 'project';
 
+    $dsn = "mysql:host=34.150.221.90;dbname=$dbName";
 
-// to get public IP addres of the SQL instance, go to GCP SQL overview page
+}
+else {
+    $username = 'user';
+    $password = 'password';
+    $connectionName = 'localhost:3306';
+    $dbName = 'project';
+    $dsn = "mysql:host=$connectionName;dbname=$dbName";
+}
 
 // To connect from a local PHP to GCP SQL instance, need to add authorized network
 // to allow your machine to connect to the SQL instance. 
