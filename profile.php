@@ -11,6 +11,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     exit;
 }
 
+$modifying = false;
 $displayName = '';
 $list_of_playlists = [];
 $playlist_to_delete = null;
@@ -26,6 +27,7 @@ if (isset($_GET['user']) and ($_GET['user'] != $_SESSION['id'])) {
     $following = getFollowing($_GET['user']);
 }
 else {
+    $modifying = true;
     $displayName = 'My';
     $list_of_playlists = getPopular($_SESSION['id']);
     $followers = getFollowers($_SESSION['id']);
@@ -39,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST['btnAction'])) {
         if($_POST['btnAction'] == "Delete") {
             deletePlaylist($_POST['playlist_to_delete']);
-            $list_of_playlists = getAllPlaylists();
+            $list_of_playlists = getPopular($_SESSION['id']);
         }
     }
 }
@@ -100,7 +102,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <th width="8%">Date Created</th>
             <th width="5%">Likes</th>
             <th width="6%">Privacy</th>
-            <th width="5%"></th>
+            <?php if ($modifying) {
+                echo '<th width="5%"></th>';
+                }
+            ?>
         </tr>
         </thead>
         <?php foreach ($list_of_playlists as $playlist): ?>
@@ -123,14 +128,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
                     ?>
                 </td>
+                <?php if ($modifying) {
+                ?>
                 <td>
                     <form action="library.php" method="post">
                         <input type="submit" value="Delete" name="btnAction"
                                class="btn btn-danger" />
                         <input type="hidden" name="playlist_to_delete"
-                               value="<?php echo $playlist['playlist_id'] ?>" />
+                               value="<?php echo $playlist['playlist_id']?>" />
                     </form>
                 </td>
+                <?php } ?>
             </tr>
         <?php endforeach; ?>
     </table>

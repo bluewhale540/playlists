@@ -1,6 +1,7 @@
 <?php
 
 require('connect_db.php');
+require('userlibs/search_fxs.php');
 session_start();
 
 //check session
@@ -8,23 +9,15 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: login.php");
     exit;
 }
-$search_results = null;
+$playlist_results = null;
+$user_results = null;
+$song_results = null;
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" and !empty($_GET["search"])) {
-    $search_results = searchPlaylists($_GET["search"]);
+    $playlist_results = searchPlaylists($_GET["search"]);
+    $user_results = searchUsers($_GET["search"]);
 }
 
-function searchPlaylists($query_term) {
-    global $db;
-    $query = "select * from playlist where name LIKE :query_term";
-    $q = $db->prepare($query);
-    $q->bindValue(':query_term', $query_term);
-    $q->execute();
-    $r = $q->fetchAll();
-
-    $q->closeCursor();
-    return $r;
-}
 ?>
 
 <head>
@@ -66,7 +59,7 @@ function searchPlaylists($query_term) {
     </nav>
 
     <div class="container mt-3">
-        <h1>Search Playlists</h1>
+        <h1>Search</h1>
         <form class="input-group" action="search.php" method="get" style="width:50%">
             <input type="text" class="form-control" name="search" required  aria-describedby="searchButton">
             <button type="submit" value="Search" name="btnAction" class="btn btn-primary">Search</button>
@@ -74,17 +67,20 @@ function searchPlaylists($query_term) {
 
     </div>
     <hr />
-    <?php if ($search_results === null) : ?>
+    <?php if ($playlist_results === null and $user_results === null) { ?>
         <div class="container mt-3">
-            <h2>Search for playlists using the form.</h2>
+            <h2>Search using the form.</h2>
         </div>
-
-    <?php elseif (count($search_results) == 0) : ?>
+    <?php }
+    else {
+        if (count($playlist_results) == 0) { ?>
         <div class="container mt-3">
-            <h2>No results found...</h2>
+            <h2>No playlists found...</h2>
         </div>
-    <?php else : ?>
+        <?php }
+        else { ?>
         <div class="container mt-3">
+            <h2>Playlists</h2>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -93,10 +89,9 @@ function searchPlaylists($query_term) {
                     <th width="8%">Date Created</th>
                     <th width="5%">Likes</th>
                     <th width="6%">Privacy</th>
-                    <th width="5%"></th>
                 </tr>
             </thead>
-            <?php foreach ($search_results as $playlist) : ?>
+            <?php foreach ($playlist_results as $playlist) : ?>
                 <tr>
                     <td> <?php echo $playlist['name']; ?> </td>
                     <td>
@@ -118,7 +113,37 @@ function searchPlaylists($query_term) {
             <?php endforeach; ?>
         </table>
         </div>
-    <?php endif; ?>
+    <?php }
+    if (count($user_results) == 0) : ?>
+        <div class="container mt-3">
+            <h2>No users found...</h2>
+        </div>
+    <?php else : ?>
+        <div class="container mt-3">
+            <h2>Users</h2>
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th width="18%">User Name</th>
+                    <th width="5%"></th>
+                    <th width="19%">Followers</th>
+                </tr>
+                </thead>
+                <?php foreach ($user_results as $user) : ?>
+                    <tr>
+                        <td> <?php echo $user['email']; ?> </td>
+                        <td>
+                            <a href="<?php echo "profile.php?user={$user['user_id']}"?>"
+                               class="btn btn-info">View</a>
+                        </td>
+                        <td> <?php echo $user['num_followers']; ?> </td>
+                    </tr>
+                <?php endforeach; ?>
+            </table>
+        </div>
+    <?php endif;
+    }
+    ?>
 </body>
 
 </html>

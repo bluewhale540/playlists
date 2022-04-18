@@ -55,8 +55,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" type="text/css" href="../style/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
     <title>Library</title>
     <link rel="icon" type="image/x-icon" href="/style/spot.jpg">
 </head>
@@ -105,30 +104,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="container mb-4">
     <h2>My Playlists</h2>
     <table class="table table-hover">
-    <?php if ($modifying) {
-        echo '<thead>
-            <tr>
-                <th width="18%">Playlist Name</th>
-                <th width="5%"></th>
-                <th width="8%">Date Created</th>
-                <th width="5%">Likes</th>
-                <th width="6%">Privacy</th>
-                <th width="5%"></th>
-            </tr>
-        </thead>';
-    }
-    else {
-        echo '<thead>
-            <tr>
-                <th>Playlist Name</th>
-                <th></th>
-                <th>Date Created</th>
-                <th>Likes</th>
-            </tr>
-        </thead>';
-    }
-    ?>
-
+        <thead>
+        <tr>
+            <th width="18%">Playlist Name</th>
+            <th width="5%"></th>
+            <th width="8%">Date Created</th>
+            <th width="5%">Likes</th>
+            <th width="6%">Privacy</th>
+            <?php if ($modifying) {
+                echo '<th width="5%"></th>';
+            }
+            ?>
+        </tr>
+        </thead>
     <?php foreach ($userPlaylists as $playlist): ?>
     <tr>
         <td> <?php echo $playlist['name']; ?>
@@ -141,13 +129,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
         <td> <?php echo $playlist['num_likes']; ?> </td>
         <td>
             <?php
-            if ($modifying) {
                 if ($playlist['is_public'] == 0) {
                     echo "Private";
                 } else {
                     echo "Public";
                 }
-            }
             ?>
         </td>
         <?php if ($modifying) {
@@ -173,29 +159,19 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="container">
     <h2>Liked Playlists</h2>
     <table class="table table-hover">
-        <?php if ($modifying) {
-            echo '<thead>
-            <tr>
-                <th width="18%">Playlist Name</th>
-                <th width="5%"></th>
-                <th width="8%">Date Created</th>
-                <th width="5%">Likes</th>
-                <th width="6%">Privacy</th>
-                <th width="5%"></th>
-            </tr>
-        </thead>';
-        }
-        else {
-            echo '<thead>
-            <tr>
-                <th>Playlist Name</th>
-                <th></th>
-                <th>Date Created</th>
-                <th>Likes</th>
-            </tr>
-        </thead>';
-        }
-        ?>
+        <thead>
+        <tr>
+            <th width="18%">Playlist Name</th>
+            <th width="5%"></th>
+            <th width="8%">Date Created</th>
+            <th width="5%">Likes</th>
+            <th width="6%">Privacy</th>
+            <?php if ($modifying) {
+                echo '<th width="5%"></th>';
+            }
+            ?>
+        </tr>
+        </thead>
 
         <?php foreach ($likedPlaylists as $playlist): ?>
             <tr>
@@ -209,13 +185,11 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <td> <?php echo $playlist['num_likes']; ?> </td>
                 <td>
                     <?php
-                    if ($modifying) {
                         if ($playlist['is_public'] == 0) {
                             echo "Private";
                         } else {
                             echo "Public";
                         }
-                    }
                     ?>
                 </td>
                 <?php if ($modifying) {

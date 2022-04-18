@@ -8,15 +8,13 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST')
-{
-    if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Add")
-    {
-        addSong($_POST['title'], $_POST['artist'], $_POST['album_name'],$_POST['date_released'], $_POST['genre']);
-        header("location: playlist_display.php");
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (!empty($_POST['btnAction']) && $_POST['btnAction'] == "Add") {
+        addSong($_POST['title'], $_POST['artist'], $_POST['album_name'],$_POST['date_released'], $_POST['genre'], $_GET['playlist']);
+        header("location: playlist_display.php?playlist=" . $_GET['playlist']);
     }
 }
-function addSong($title, $artist, $album_name, $date_released, $genre){
+function addSong($title, $artist, $album_name, $date_released, $genre, $playlist){
     global $db;
     //add song to database
 
@@ -79,7 +77,7 @@ function addSong($title, $artist, $album_name, $date_released, $genre){
 
     $statement->bindValue(':title',$title);
     $statement->bindValue(':artist',$artist);
-    $statement->bindValue(':playlist_id',$_SESSION["playlist_id"]);
+    $statement->bindValue(':playlist_id',$playlist);
     $statement-> execute();
 	$statement->closeCursor();
 
@@ -132,7 +130,7 @@ function addSong($title, $artist, $album_name, $date_released, $genre){
 <div class="container mt-3">
   <h1 >Add Song to Playlist</h1>  
 
-  <form name="mainForm" action="add_song_to_playlist.php" method="post">   
+  <form name="mainForm" action="#" method="post">
   <div class="row mb-3 mx-3">
     Title:
     <input type="text" class="form-control" name="title" required/>        

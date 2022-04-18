@@ -127,7 +127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </form>
             <?php endif;?>
         <p><a href="library.php">Go to my playlist library!</a></p>
-        <p><a href="add_song_to_playlist.php">Add song to playlist!</a></p>
+        <p><a href="add_song_to_playlist.php?playlist=<?php echo $_GET['playlist']?>">Add song to playlist!</a></p>
 
         <hr />
         <h2>Playlist Songs</h2>
