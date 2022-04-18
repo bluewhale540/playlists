@@ -1,5 +1,8 @@
 <?php
 require('connect_db.php');
+
+session_start();
+
 $email = "";
 $password = "";
 $login_error_message = "";
