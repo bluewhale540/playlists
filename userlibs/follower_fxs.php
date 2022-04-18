@@ -28,6 +28,20 @@ function getFollowing($userId) {
     return $results;
 }
 
+function getFollowerCount($userId) {
+    global $db;
+    $query = "SELECT COUNT(*) FROM user
+        INNER JOIN follows ON user.user_id = follows.follower
+        WHERE followed=:id";
+    $statement = $db->prepare($query);
+    $statement->bindValue(':id', $userId);
+    $statement->execute();
+
+    $results = $statement->fetchAll();
+    $statement->closeCursor();
+    return $results[0][0];
+}
+
 function followUser($current_user, $target_user){
     global $db;
     $query = $db->prepare('INSERT INTO follows (follower, followed) VALUES(:current_user, :target_user)');

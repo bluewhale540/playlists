@@ -2,6 +2,7 @@
 
 require('connect_db.php');
 require('userlibs/search_fxs.php');
+require('userlibs/follower_fxs.php');
 session_start();
 
 //check session
@@ -136,7 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] == "GET" and !empty($_GET["search"])) {
                             <a href="<?php echo "profile.php?user={$user['user_id']}"?>"
                                class="btn btn-info">View</a>
                         </td>
-                        <td> <?php echo $user['num_followers']; ?> </td>
+                        <td> <?php echo getFollowerCount($user['user_id']); ?> </td>
                     </tr>
                 <?php endforeach; ?>
             </table>
