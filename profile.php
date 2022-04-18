@@ -13,6 +13,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 $modifying = false;
 $displayName = '';
+$is_following = false;
 $list_of_playlists = [];
 $playlist_to_delete = null;
 
@@ -22,6 +23,7 @@ $following = [];
 if (isset($_GET['user']) and ($_GET['user'] != $_SESSION['id'])) {
     $uName = getUser($_GET['user'])['email'];
     $displayName = "{$uName}'s";
+    $is_following = checkFollowing($_SESSION['id'], $_GET['user']);
     $list_of_playlists = getPopular($_GET['user']);
     $followers = getFollowers($_GET['user']);
     $following = getFollowing($_GET['user']);
@@ -39,9 +41,19 @@ $numFollowing = sizeof($following);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST['btnAction'])) {
-        if($_POST['btnAction'] == "Delete") {
+        if($_POST['btnAction'] == "Delete ❌") {
             deletePlaylist($_POST['playlist_to_delete']);
             $list_of_playlists = getPopular($_SESSION['id']);
+        }
+        else if ($_POST['btnAction'] == 'Follow'){
+            followUser($_SESSION['id'], $_GET['user']);
+            $is_following = checkFollowing($_SESSION['id'], $_GET['user']);
+            $followers = getFollowers($_GET['user']);
+        }
+        else if ($_POST['btnAction'] == 'Un-Follow'){
+            unFollowUser($_SESSION['id'], $_GET['user']);
+            $is_following = checkFollowing($_SESSION['id'], $_GET['user']);
+            $followers = getFollowers($_GET['user']);
         }
     }
 }
@@ -91,9 +103,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </nav>
 
 <div class="container mt-3">
-    <h1><?php echo $displayName; ?> Profile</h1>
+    <div class="row">
+        <div class="col-md-10">
+            <h1><?php echo $displayName; ?> Profile</h1>
+        </div>
+        <div class="col-sm-1 mx-4">
+            <?php if (!$modifying) {?>
+                <?php if ($is_following):?>
+                    <form method="post" action="#">
+                        <input type="submit" value="Un-Follow" name="btnAction"  class='btn btn-secondary' title='stop following this user'/>
 
-    <h2>Most Popular Playlists</h2>
+                    </form>
+                <?php else :?>
+                    <form method="post" action="#">
+                        <input type="submit" value="Follow" name="btnAction"  class='btn btn-success' title='follow this user'/>
+
+                    </form>
+                <?php endif;
+            }?>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-auto">
+            <h2>Most Popular Playlists</h2>
+        </div>
+        <div class="col mt-1">
+            <?php if ($modifying) {?>
+                <a href="library.php" class="btn btn-info btn-sm">View All -></a>
+            <?php }
+            else {?>
+                <a href="library.php?user=<?php echo $_GET['user']?>" class="btn btn-info btn-sm">View All -></a>
+            <?php }?>
+        </div>
+    </div>
     <table class="table table-hover">
         <thead>
         <tr>
@@ -132,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ?>
                 <td>
                     <form action="library.php" method="post">
-                        <input type="submit" value="Delete" name="btnAction"
+                        <input type="submit" value="Delete ❌" name="btnAction"
                                class="btn btn-danger" />
                         <input type="hidden" name="playlist_to_delete"
                                value="<?php echo $playlist['playlist_id']?>" />

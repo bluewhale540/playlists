@@ -20,8 +20,8 @@ $displayName = '';
 if (isset($_GET['user']) and ($_GET['user'] != $_SESSION['id'])) {
     $uName = getUser($_GET['user'])['email'];
     $displayName = "{$uName}'s";
-    $userPlaylists = getAllPlaylists($_GET['user'], false);
-    $likedPlaylists = getLikedPlaylists($_GET['user'], false);
+    $userPlaylists = getAllPlaylists($_GET['user'], true);  // set owner to false to hide private playlists to other users
+    $likedPlaylists = getLikedPlaylists($_GET['user'], true);  // set owner to false to hide private playlists to other users
 }
 else {
     $modifying = true;
@@ -32,12 +32,12 @@ else {
 
 if($_SERVER['REQUEST_METHOD'] == 'POST') {
     if(!empty($_POST['btnAction'])) {
-        if($_POST['btnAction'] == "Delete") {
+        if($_POST['btnAction'] == "Delete ❌") {
             deletePlaylist($_POST['playlist_to_delete']);
             $userPlaylists = getAllPlaylists($_SESSION['id'], true);
             $likedPlaylists = getLikedPlaylists($_SESSION['id'], true);
         }
-        else if ($_POST['btnAction'] == 'Unlike') {
+        else if ($_POST['btnAction'] == 'Unlike 👎') {
             unlike_playlist($_POST['playlist_to_unlike'], $_SESSION['id']);
             $userPlaylists = getAllPlaylists($_SESSION['id'], true);
             $likedPlaylists = getLikedPlaylists($_SESSION['id'], true);
@@ -140,7 +140,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
             ?>
             <td>
             <form action="library.php" method="post">
-                <input type="submit" value="Delete" name="btnAction"
+                <input type="submit" value="Delete ❌" name="btnAction"
                     class="btn btn-danger" />
                 <input type="hidden" name="playlist_to_delete"
                     value="<?php echo $playlist['playlist_id']?>" />
@@ -196,7 +196,7 @@ if($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ?>
                     <td>
                         <form action="library.php" method="post">
-                            <input type="submit" value="Unlike" name="btnAction"
+                            <input type="submit" value="Unlike 👎" name="btnAction"
                                    class="btn btn-secondary" />
                             <input type="hidden" name="playlist_to_unlike"
                                    value="<?php echo $playlist['playlist_id']?>" />

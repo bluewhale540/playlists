@@ -44,11 +44,11 @@ else {
 $numComments = sizeof($comments);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if ($_POST['btnAction'] == "Like") {
+    if ($_POST['btnAction'] == "Like 👍") {
         like_playlist($_GET['playlist'], $_SESSION['id']);
         $likes_playlist = check_if_likes($_GET['playlist'], $_SESSION['id']);
     }
-    else if ($_POST['btnAction'] == "Unlike") {
+    else if ($_POST['btnAction'] == "Unlike 👎") {
         unlike_playlist($_GET['playlist'], $_SESSION['id']);
         $likes_playlist = check_if_likes($_GET['playlist'], $_SESSION['id']);
     }
@@ -113,7 +113,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </nav>
 
     <div class="container mt-3">
-        <h1><?php echo $playlist_name ?></h1>
+        <div class="row">
+            <div class="col-md-10">
+                <h1><?php echo $playlist_name ?></h1>
+            </div>
+            <div class="col-sm-1 mx-4">
+                <?php if ($owner == 0 || 1) { //GET RID OF the '|| 1' TO ALLOW ANYONE INCLUDING OWNER TO LIKE PLAYLIST
+                    if ($likes_playlist) {
+                        echo "<form method='post' action='#'> 
+                    <input type='submit' value='Unlike 👎' name='btnAction' class='btn btn-secondary' title='unlike the playlist' />
+                    </form>";
+                    } else {
+                        echo "<form method='post' action='#'>
+                    <input type='submit' value='Like 👍' name='btnAction' class='btn btn-success btn' title='like the playlist' />
+                    </form>";
+                    }
+                }
+                ?>
+            </div>
+        </div>
         <p>Made by: <?php echo $playlist_owner['email']?><p>
             <?php if ($is_following):?>
                 <form method="post" action="#">
@@ -126,23 +144,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             </form>
             <?php endif;?>
-        <p><a href="library.php">Go to my playlist library!</a></p>
-        <p><a href="add_song_to_playlist.php?playlist=<?php echo $_GET['playlist']?>">Add song to playlist!</a></p>
-
         <hr />
-        <h2>Playlist Songs</h2>
-        <?php if ($owner == 0 || 1) { //GET RID OF the '|| 1' TO ALLOW ANYONE INCLUDING OWNER TO LIKE PLAYLIST
-            if ($likes_playlist) {
-                echo "<form method='post' action='#'> 
-                    <input type='submit' value='Unlike' name='btnAction' class='btn btn-secondary' title='unlike the playlist' />
-                    </form>";
-            } else {
-                echo "<form method='post' action='#'>
-                    <input type='submit' value='Like' name='btnAction' class='btn btn-success' title='like the playlist' />
-                    </form>";
-            }
-        }
-        ?>
+        <div class="row">
+            <div class="col-md-auto">
+                <h2>Playlist Songs</h2>
+            </div>
+            <div class="col mt-1">
+                <?php if ($owner) {?>
+                    <a href="add_song_to_playlist.php?playlist=<?php echo $_GET['playlist']?>" class='btn btn-info btn-sm'>Add +</a>
+                <?php }?>
+            </div>
+        </div>
 
         <!-- <div class="row justify-content-center">   -->
         <table class="table table-hover">
@@ -153,7 +165,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <th width="20%">Album</th>
                     <th width="12%">Year</th>
                     <th width="12%">Genre</th>
-                    <th width="12%">Delete</th>
+                    <?php if ($owner) {
+                        echo '<th width="12%">Delete</th>';
+                    }
+                    ?>
                 </tr>
             </thead>
             <?php foreach ($list_of_songs as $song) :  ?>
@@ -163,12 +178,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <td><?php echo $song['album']; ?></td>
                     <td><?php echo $song['year']; ?></td>
                     <td><?php echo $song['genre']; ?></td>
-                    <td>
-                        <form action="" method="post">
-                            <input type="submit" value="Delete" name="btnAction" class="btn btn-danger" title="Permanently delete the record" />
-                            <input type="hidden" name="song_to_delete" value="<?php echo $song['song_id'] ?>" />
-                        </form>
-                    </td>
+                    <?php if ($owner) {?>
+                        <td>
+                            <form action="" method="post">
+                                <input type="submit" value="Delete" name="btnAction" class="btn btn-danger" title="Permanently delete the record" />
+                                <input type="hidden" name="song_to_delete" value="<?php echo $song['song_id'] ?>" />
+                            </form>
+                        </td>
+                    <?php }?>
                 </tr>
             <?php endforeach; ?>
         </table>
